@@ -5,6 +5,7 @@ import com.sena.managing_medical_appointments.security.model.dto.req.UserRequest
 import com.sena.managing_medical_appointments.security.model.dto.res.UserResponseDTO;
 import com.sena.managing_medical_appointments.security.model.entity.User;
 import com.sena.managing_medical_appointments.shared.AbstractController;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
