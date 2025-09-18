@@ -1,20 +1,20 @@
-# Diagrama de Secuencia - Agendar Cita
+# Sequence Diagram - Schedule Appointment
 
-**Archivo PlantUML:** `secuencia.wsd`
+**PlantUML File:** `secuencia.wsd`
 
 ```plantuml
-@startuml Diagrama de Secuencia - Agendar Cita
+@startuml Sequence Diagram - Schedule Appointment
 
-actor Paciente as P
-participant "Sistema" as S
-participant "Médico" as M
+actor Patient as P
+participant "System" as S
+participant "Doctor" as M
 
-P -> S: Solicitar agendar cita
-S -> P: Mostrar médicos disponibles
-P -> S: Seleccionar médico y fecha
-S -> M: Verificar disponibilidad
-M -> S: Confirmar disponibilidad
-S -> P: Cita agendada exitosamente
-S -> M: Notificar nueva cita
+P -> S: Request to schedule appointment
+S -> P: Show available doctors
+P -> S: Select doctor and date
+S -> M: Check availability
+M -> S: Confirm availability
+S -> P: Appointment successfully scheduled
+S -> M: Notify new appointment
 
 @enduml

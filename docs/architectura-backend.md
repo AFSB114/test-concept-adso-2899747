@@ -1,271 +1,271 @@
-# Arquitectura del Backend - Sistema de Gestión de Citas Hospitalarias
+# Backend Architecture - Hospital Appointment Management System
 
-## Introducción
+## Introduction
 
-Este documento describe la arquitectura del backend para el **Sistema de Gestión de Citas Hospitalarias**, una aplicación desarrollada con Java y Spring Boot que permite gestionar citas médicas, pacientes, médicos, y toda la parametrización necesaria para un hospital.
+This document describes the backend architecture for the **Hospital Appointment Management System**, an application developed with Java and Spring Boot that allows managing medical appointments, patients, doctors, and all necessary parametrization for a hospital.
 
-## Tecnologías Utilizadas
+## Technologies Used
 
 ### Core Technologies
-- **Java 17+**: Lenguaje de programación principal.
-- **Spring Boot 3.x**: Framework para desarrollo rápido de aplicaciones Java.
-- **Spring Data JPA**: Para acceso a datos relacional.
-- **PostgreSQL 15+**: Base de datos relacional con soporte para esquemas.
+- **Java 17+**: Main programming language.
+- **Spring Boot 3.x**: Framework for rapid Java application development.
+- **Spring Data JPA**: Abstraction for relational data access.
+- **PostgreSQL 15+**: Relational database with native schema support.
 
 ### Additional Libraries
-- **Lombok**: Reducción de código repetitivo.
-- **Swagger/OpenAPI**: Documentación automática de APIs.
+- **Lombok**: Reduction of repetitive code.
+- **Swagger/OpenAPI**: Automatic API documentation.
 
 ### DevOps & Tools
-- **Maven**: Gestión de dependencias y build.
-- **Git**: Control de versiones.
+- **Maven**: Dependency management and build.
+- **Git**: Version control.
 
-## Arquitectura General
+## General Architecture
 
-El sistema sigue una arquitectura modular con separación clara de responsabilidades. Cada módulo maneja una parte específica del dominio del negocio, manteniendo el código organizado y fácil de mantener.
+The system follows a modular architecture with clear responsibility separation. Each module handles a specific part of the business domain, maintaining organized and maintainable code.
 
-## Estructura de Carpetas
+## Folder Structure
 
 ```
 src/main/java/com/hospital/
-├── config/                    # Configuraciones globales (BD, web)
-├── pacientes/                 # Módulo Pacientes
-│   ├── controller/            # Endpoints REST
-│   ├── service/               # Lógica de negocio
-│   ├── repository/            # Acceso a datos
-│   └── model/                 # Entidades JPA
-├── medicos/                   # Módulo Médicos
+├── config/                    # Global configurations
+├── patients/                  # Patients Module
+│   ├── controller/            # REST endpoints
+│   ├── service/               # Business logic
+│   ├── repository/            # Data access
+│   └── model/                 # JPA entities
+├── doctors/                   # Doctors Module
 │   ├── controller/
 │   ├── service/
 │   ├── repository/
 │   └── model/
-├── citas/                     # Módulo Citas
+├── appointments/              # Appointments Module
 │   ├── controller/
 │   ├── service/
 │   ├── repository/
 │   └── model/
-├── parametrizacion/           # Módulo Parametrización
+├── parameterization/          # Parameterization Module
 │   ├── controller/
 │   ├── service/
 │   ├── repository/
 │   └── model/
-├── seguridad/                 # Módulo Seguridad
+├── security/                  # Security Module
 │   ├── controller/
 │   ├── service/
 │   ├── repository/
 │   └── model/
-└── HospitalApplication.java   # Clase principal
+└── HospitalApplication.java   # Main class
 ```
 
-## Descripción de Módulos
+## Module Descriptions
 
-### Módulo Pacientes
-Gestiona la información de los pacientes del hospital.
-- **Paciente**: Datos personales y de contacto
-- **HistorialMedico**: Registros médicos del paciente
+### Patients Module
+Manages hospital patient information.
+- **Patient**: Personal data and contact information
+- **MedicalHistory**: Patient medical records
 
-### Módulo Médicos
-Maneja la información de los profesionales médicos.
-- **Medico**: Información del profesional médico
-- **Turno**: Horarios de trabajo de los médicos
+### Doctors Module
+Handles medical professional information.
+- **Doctor**: Medical professional information
+- **Shift**: Doctor work schedules
 
-### Módulo Citas
-Controla la programación y gestión de citas médicas.
-- **Cita**: Información de la cita programada
-- **Sala**: Espacios físicos donde se atienden las citas
-- **Hospital**: Información de los centros médicos
+### Appointments Module
+Controls medical appointment programming and management.
+- **Appointment**: Scheduled appointment information
+- **Room**: Hospital physical spaces
+- **Hospital**: Medical center information
 
-### Módulo Parametrización
-Contiene los datos maestros y configuraciones del sistema.
-- **Rol**: Roles de usuario en el sistema
-- **TipoCita**: Tipos de consulta médica disponibles
-- **EstadoCita**: Estados posibles de una cita
-- **Especialidad**: Especialidades médicas
+### Parameterization Module
+Contains system master data and configurations.
+- **Role**: User roles in the system
+- **AppointmentType**: Available medical consultation types
+- **AppointmentStatus**: Possible appointment statuses
+- **Specialty**: Medical specialties
 
-### Módulo Seguridad
-Gestiona los usuarios y sus credenciales de acceso.
-- **Usuario**: Información de autenticación de usuarios
+### Security Module
+Manages user access credentials.
+- **User**: User authentication information
 
-## API REST
+## REST API
 
-La API expondrá endpoints para operaciones CRUD en las entidades por módulo:
+The API will expose CRUD endpoints for entities by module:
 
-### Pacientes API
+### Patients API
 ```
-GET    /api/pacientes              # Listar pacientes
-GET    /api/pacientes/{id}         # Obtener paciente por ID
-POST   /api/pacientes              # Crear paciente
-PUT    /api/pacientes/{id}         # Actualizar paciente
-DELETE /api/pacientes/{id}         # Eliminar paciente
-GET    /api/pacientes/{id}/historial # Obtener historial médico
-POST   /api/pacientes/{id}/historial # Agregar registro médico
-```
-
-### Médicos API
-```
-GET    /api/medicos                # Listar médicos
-GET    /api/medicos/{id}           # Obtener médico por ID
-POST   /api/medicos                # Crear médico
-PUT    /api/medicos/{id}           # Actualizar médico
-DELETE /api/medicos/{id}           # Eliminar médico
-GET    /api/medicos/{id}/turnos    # Obtener turnos del médico
-POST   /api/medicos/{id}/turnos    # Agregar turno
+GET    /api/patients              # List patients
+GET    /api/patients/{id}         # Get patient by ID
+POST   /api/patients              # Create patient
+PUT    /api/patients/{id}         # Update patient
+DELETE /api/patients/{id}         # Delete patient
+GET    /api/patients/{id}/history # Get medical history
+POST   /api/patients/{id}/history # Add medical record
 ```
 
-### Citas API
+### Doctors API
 ```
-GET    /api/citas                  # Listar citas
-GET    /api/citas/{id}             # Obtener cita por ID
-POST   /api/citas                  # Crear cita
-PUT    /api/citas/{id}             # Actualizar cita
-DELETE /api/citas/{id}             # Eliminar cita
-GET    /api/citas/paciente/{id}    # Citas de un paciente
-GET    /api/citas/medico/{id}      # Citas de un médico
-```
-
-### Parametrización API
-```
-GET    /api/roles                  # Listar roles
-GET    /api/tipos-cita             # Listar tipos de cita
-GET    /api/estados-cita           # Listar estados de cita
-GET    /api/especialidades         # Listar especialidades
+GET    /api/doctors               # List doctors
+GET    /api/doctors/{id}          # Get doctor by ID
+POST   /api/doctors               # Create doctor
+PUT    /api/doctors/{id}          # Update doctor
+DELETE /api/doctors/{id}          # Delete doctor
+GET    /api/doctors/{id}/shifts   # Get doctor shifts
+POST   /api/doctors/{id}/shifts   # Add shift
 ```
 
-### Seguridad API
+### Appointments API
 ```
-GET    /api/usuarios               # Listar usuarios
-GET    /api/usuarios/{id}          # Obtener usuario por ID
-POST   /api/usuarios               # Crear usuario
-PUT    /api/usuarios/{id}          # Actualizar usuario
-DELETE /api/usuarios/{id}          # Eliminar usuario
+GET    /api/appointments          # List appointments
+GET    /api/appointments/{id}     # Get appointment by ID
+POST   /api/appointments          # Create appointment
+PUT    /api/appointments/{id}     # Update appointment
+DELETE /api/appointments/{id}     # Delete appointment
+GET    /api/appointments/patient/{id} # Patient appointments
+GET    /api/appointments/doctor/{id}  # Doctor appointments
 ```
 
-## Base de Datos
+### Parameterization API
+```
+GET    /api/roles                 # List roles
+GET    /api/appointment-types     # List appointment types
+GET    /api/appointment-statuses  # List appointment statuses
+GET    /api/specialties           # List specialties
+```
 
-### Estrategia de Esquemas
-Cada módulo tiene su propio esquema en PostgreSQL para mantener la separación de datos y facilitar el mantenimiento.
+### Security API
+```
+GET    /api/users                 # List users
+GET    /api/users/{id}            # Get user by ID
+POST   /api/users                 # Create user
+PUT    /api/users/{id}            # Update user
+DELETE /api/users/{id}            # Delete user
+```
 
-### Esquemas del Sistema
+## Database
 
-#### pacientes_schema
+### Schema Strategy
+Each module has its own schema in PostgreSQL to maintain data separation and facilitate maintenance.
+
+### System Schemas
+
+#### patients_schema
 ```sql
-CREATE TABLE pacientes (
+CREATE TABLE patients (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    fecha_nacimiento DATE,
-    telefono VARCHAR(20),
+    name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    birth_date DATE,
+    phone VARCHAR(20),
     email VARCHAR(150)
 );
 
-CREATE TABLE historial_medico (
+CREATE TABLE medical_history (
     id BIGSERIAL PRIMARY KEY,
-    paciente_id BIGINT NOT NULL REFERENCES pacientes(id),
-    descripcion TEXT NOT NULL,
-    fecha TIMESTAMP NOT NULL
+    patient_id BIGINT NOT NULL REFERENCES patients(id),
+    description TEXT NOT NULL,
+    date TIMESTAMP NOT NULL
 );
 ```
 
-#### medicos_schema
+#### doctors_schema
 ```sql
-CREATE TABLE medicos (
+CREATE TABLE doctors (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    especialidad_id BIGINT NOT NULL,
-    telefono VARCHAR(20),
+    name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    specialty_id BIGINT NOT NULL,
+    phone VARCHAR(20),
     email VARCHAR(150)
 );
 
-CREATE TABLE turnos (
+CREATE TABLE shifts (
     id BIGSERIAL PRIMARY KEY,
-    medico_id BIGINT NOT NULL REFERENCES medicos(id),
-    fecha DATE NOT NULL,
-    hora_inicio TIME NOT NULL,
-    hora_fin TIME NOT NULL
+    doctor_id BIGINT NOT NULL REFERENCES doctors(id),
+    date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL
 );
 ```
 
-#### citas_schema
+#### appointments_schema
 ```sql
-CREATE TABLE hospitales (
+CREATE TABLE hospitals (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(200) NOT NULL,
-    direccion TEXT
+    name VARCHAR(200) NOT NULL,
+    address TEXT
 );
 
-CREATE TABLE salas (
+CREATE TABLE rooms (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    hospital_id BIGINT NOT NULL REFERENCES hospitales(id)
+    name VARCHAR(100) NOT NULL,
+    hospital_id BIGINT NOT NULL REFERENCES hospitals(id)
 );
 
-CREATE TABLE citas (
+CREATE TABLE appointments (
     id BIGSERIAL PRIMARY KEY,
-    paciente_id BIGINT NOT NULL,
-    medico_id BIGINT NOT NULL,
-    sala_id BIGINT REFERENCES salas(id),
-    hospital_id BIGINT REFERENCES hospitales(id),
-    tipo_cita_id BIGINT NOT NULL,
-    estado_id BIGINT NOT NULL,
-    fecha DATE NOT NULL,
-    hora TIME NOT NULL
+    patient_id BIGINT NOT NULL,
+    doctor_id BIGINT NOT NULL,
+    room_id BIGINT REFERENCES rooms(id),
+    hospital_id BIGINT REFERENCES hospitals(id),
+    appointment_type_id BIGINT NOT NULL,
+    status_id BIGINT NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL
 );
 ```
 
-#### parametrizacion_schema
+#### parameterization_schema
 ```sql
 CREATE TABLE roles (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE tipos_cita (
+CREATE TABLE appointment_types (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT
+    name VARCHAR(100) NOT NULL,
+    description TEXT
 );
 
-CREATE TABLE estados_cita (
+CREATE TABLE appointment_statuses (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE especialidades (
+CREATE TABLE specialties (
     id BIGSERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL
 );
 ```
 
-#### seguridad_schema
+#### security_schema
 ```sql
-CREATE TABLE usuarios (
+CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    nombre_usuario VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    rol_id BIGINT NOT NULL,
-    paciente_id BIGINT,
-    medico_id BIGINT
+    role_id BIGINT NOT NULL,
+    patient_id BIGINT,
+    doctor_id BIGINT
 );
 ```
 
-## Patrón de Arquitectura
+## Architecture Pattern
 
-### Patrón MVC por Módulo
-Cada módulo sigue el patrón Model-View-Controller:
-- **Model**: Entidades JPA que representan las tablas de la base de datos
-- **Repository**: Interfaces que extienden JpaRepository para acceso a datos
-- **Service**: Lógica de negocio del módulo
-- **Controller**: Endpoints REST que exponen la funcionalidad
+### MVC Pattern by Module
+Each module follows the Model-View-Controller pattern:
+- **Model**: JPA entities representing database tables
+- **Repository**: Interfaces extending JpaRepository for data access
+- **Service**: Module business logic
+- **Controller**: REST endpoints exposing functionality
 
-### Ventajas del Enfoque
-- **Separación clara**: Cada módulo es independiente
-- **Mantenibilidad**: Fácil localizar y modificar código
-- **Escalabilidad**: Se pueden agregar nuevos módulos sin afectar otros
-- **Testabilidad**: Cada módulo se puede probar de forma aislada
+### Advantages of the Approach
+- **Clear separation**: Each module is independent
+- **Maintainability**: Easy to locate and modify code
+- **Scalability**: New modules can be added without affecting others
+- **Testability**: Each module can be tested in isolation
 
-## Conclusión
+## Conclusion
 
-Esta arquitectura proporciona una base sólida y simple para el Sistema de Gestión de Citas Hospitalarias. La separación por módulos facilita el desarrollo y mantenimiento del código, mientras que el uso de Spring Boot acelera el proceso de desarrollo.
+This architecture provides a solid and simple foundation for the Hospital Appointment Management System. The module separation facilitates development and maintenance, while Spring Boot accelerates the development process.
 
-El sistema está diseñado para ser funcional desde el inicio, con espacio para agregar características más avanzadas como seguridad y microservicios en el futuro.
+The system is designed to be functional from the start, with room for adding more advanced features like security and microservices in the future.
