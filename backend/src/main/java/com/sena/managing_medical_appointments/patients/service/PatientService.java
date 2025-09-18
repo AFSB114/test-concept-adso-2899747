@@ -5,6 +5,7 @@ import com.sena.managing_medical_appointments.patients.model.dto.req.PatientRequ
 import com.sena.managing_medical_appointments.patients.model.dto.res.PatientResponseDTO;
 import com.sena.managing_medical_appointments.patients.model.entity.Patient;
 import com.sena.managing_medical_appointments.patients.repository.IPatientRepository;
+import com.sena.managing_medical_appointments.security.model.entity.User;
 import com.sena.managing_medical_appointments.shared.AbstractService;
 import com.sena.managing_medical_appointments.shared.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +35,21 @@ public class PatientService extends AbstractService<Patient, PatientRequestDTO, 
         response.setBirthDate(entity.getBirthDate());
         response.setPhone(entity.getPhone());
         response.setEmail(entity.getEmail());
+        response.setUserId(entity.getUser().getId());
         return response;
     }
 
     @Override
     public Patient mapToEntity(PatientRequestDTO request) {
+        User user = new User();
+        user.setId(request.getUserId());
         Patient entity = new Patient();
         entity.setName(request.getName());
         entity.setLastName(request.getLastName());
         entity.setBirthDate(request.getBirthDate());
         entity.setPhone(request.getPhone());
         entity.setEmail(request.getEmail());
+        entity.setUser(user);
         return entity;
     }
 }
