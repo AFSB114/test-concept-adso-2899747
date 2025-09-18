@@ -1,4 +1,4 @@
-package com.sena.managing_medical_appointments.patients.dto.res;
+package com.sena.managing_medical_appointments.patients.model.dto.res;
 
 import com.sena.managing_medical_appointments.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
