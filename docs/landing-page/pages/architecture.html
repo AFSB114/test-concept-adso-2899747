@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - Hospital Appointment Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🏥 HAMS</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#technologies">Technologies</a></li>
+                <li><a href="#patterns">Patterns</a></li>
+                <li><a href="#deployment">Deployment</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>System Architecture</h1>
+            <p>Detailed technical architecture of the Hospital Appointment Management System</p>
+        </div>
+    </section>
+
+    <!-- Architecture Details -->
+    <section id="architecture" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>🏗️ Architecture Overview</h3>
+                    <p>The system follows a modular microservices architecture within a monorepo structure. Each module is designed to be independent while maintaining clear communication channels between them.</p>
+
+                    <h4>Key Principles:</h4>
+                    <ul>
+                        <li><strong>Separation of Concerns:</strong> Each module handles specific business domain</li>
+                        <li><strong>Data Isolation:</strong> Separate database schemas for each module</li>
+                        <li><strong>Scalability:</strong> Modules can be scaled independently</li>
+                        <li><strong>Maintainability:</strong> Clear boundaries and responsibilities</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Layered Architecture</h3>
+                    <p>Each module follows a clean layered architecture pattern:</p>
+
+                    <div class="code-block">
+Controller Layer (REST API)
+    ↓
+Service Layer (Business Logic)
+    ↓
+Repository Layer (Data Access)
+    ↓
+Database Layer (PostgreSQL)
+                    </div>
+
+                    <p><strong>Benefits:</strong></p>
+                    <ul>
+                        <li>Testability at each layer</li>
+                        <li>Clear separation of concerns</li>
+                        <li>Easy maintenance and updates</li>
+                        <li>Framework independence</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section id="technologies" class="content-section">
+        <div class="container">
+            <h2>Technology Stack</h2>
+            <p>Modern technology stack chosen for reliability, performance, and maintainability</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">☕</div>
+                    <h3>Java 17</h3>
+                    <p>Latest LTS version with modern language features</p>
+                    <ul class="card-features">
+                        <li>Records and sealed classes</li>
+                        <li>Pattern matching</li>
+                        <li>Enhanced switch expressions</li>
+                        <li>Text blocks for SQL</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌱</div>
+                    <h3>Spring Boot 3.x</h3>
+                    <p>Production-ready framework for enterprise applications</p>
+                    <ul class="card-features">
+                        <li>Auto-configuration</li>
+                        <li>Embedded server</li>
+                        <li>Actuator for monitoring</li>
+                        <li>Security integration</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🗄️</div>
+                    <h3>PostgreSQL 15+</h3>
+                    <p>Advanced relational database with JSON support</p>
+                    <ul class="card-features">
+                        <li>Schema separation</li>
+                        <li>Advanced indexing</li>
+                        <li>JSONB for flexibility</li>
+                        <li>ACID compliance</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔧</div>
+                    <h3>Spring Data JPA</h3>
+                    <p>Object-relational mapping and data access</p>
+                    <ul class="card-features">
+                        <li>Repository pattern</li>
+                        <li>Query methods</li>
+                        <li>Custom queries</li>
+                        <li>Auditing support</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Spring Security</h3>
+                    <p>Authentication and authorization framework</p>
+                    <ul class="card-features">
+                        <li>JWT integration</li>
+                        <li>Role-based access</li>
+                        <li>OAuth2 support</li>
+                        <li>Method security</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3>OpenAPI/Swagger</h3>
+                    <p>API documentation and testing</p>
+                    <ul class="card-features">
+                        <li>Interactive documentation</li>
+                        <li>API testing interface</li>
+                        <li>Code generation</li>
+                        <li>Contract-first development</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Patterns -->
+    <section id="patterns" class="content-section">
+        <div class="container">
+            <h2>Design Patterns</h2>
+            <p>Industry-standard patterns implemented throughout the system</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>🏛️ Repository Pattern</h3>
+                    <p>Abstracts data access logic and provides a consistent interface</p>
+                    <div class="code-block">
+public interface PatientRepository extends JpaRepository<Patient, Long> {
+    List<Patient> findByLastName(String lastName);
+    Optional<Patient> findByEmail(String email);
+}
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎯 Service Layer Pattern</h3>
+                    <p>Contains business logic and orchestrates repository calls</p>
+                    <div class="code-block">
+@Service
+public class PatientService {
+    @Autowired
+    private PatientRepository repository;
+
+    public Patient createPatient(Patient patient) {
+        // Business logic here
+        return repository.save(patient);
+    }
+}
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎨 DTO Pattern</h3>
+                    <p>Data Transfer Objects for API communication</p>
+                    <div class="code-block">
+public record PatientDTO(
+    Long id,
+    String name,
+    String lastName,
+    LocalDate birthDate,
+    String phone,
+    String email
+) {}
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>🛡️ Controller Pattern</h3>
+                    <p>REST endpoints with proper HTTP response handling</p>
+                    <div class="code-block">
+@RestController
+@RequestMapping("/api/patients")
+public class PatientController {
+    @PostMapping
+    public ResponseEntity<PatientDTO> create(@RequestBody PatientDTO dto) {
+        // Implementation
+    }
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deployment Section -->
+    <section id="deployment" class="content-section">
+        <div class="container">
+            <h2>Deployment Architecture</h2>
+            <p>Scalable deployment strategy for production environments</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>🐳 Containerization</h3>
+                    <p>Docker containers for consistent deployment</p>
+                    <div class="code-block">
+FROM openjdk:17-jdk-slim
+COPY target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app.jar"]
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>☸️ Orchestration</h3>
+                    <p>Kubernetes for container orchestration</p>
+                    <div class="code-block">
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hams-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hams
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>🗄️ Database</h3>
+                    <p>PostgreSQL with connection pooling</p>
+                    <div class="code-block">
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.minimum-idle=5
+spring.jpa.hibernate.ddl-auto=validate
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Monitoring</h3>
+                    <p>Application monitoring and health checks</p>
+                    <div class="code-block">
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Hospital Appointment Management System</h3>
+            <p>Technical architecture documentation</p>
+            <p>© 2024 - Java 17 + Spring Boot 3.x + PostgreSQL</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

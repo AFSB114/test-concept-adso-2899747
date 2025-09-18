@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database - Hospital Appointment Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🏥 HAMS</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#schemas">Schemas</a></li>
+                <li><a href="#mer">MER Diagram</a></li>
+                <li><a href="#relationships">Relationships</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Database Design</h1>
+            <p>Complete PostgreSQL database design with 5 schemas and Entity-Relationship Model</p>
+        </div>
+    </section>
+
+    <!-- Database Overview -->
+    <section id="overview" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>🗄️ Database Architecture</h3>
+                    <p><strong>Database:</strong> PostgreSQL 15+</p>
+                    <p><strong>Schemas:</strong> 5 separate schemas for data isolation</p>
+                    <p><strong>Strategy:</strong> Schema-per-module for clear separation</p>
+
+                    <h4>Benefits:</h4>
+                    <ul>
+                        <li>Data isolation between modules</li>
+                        <li>Easier maintenance and updates</li>
+                        <li>Better security controls</li>
+                        <li>Simplified backup and restore</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Schema Distribution</h3>
+                    <div class="schema-grid">
+                        <div class="schema-item">
+                            <h4>patients_schema</h4>
+                            <p>2 tables</p>
+                            <small>Patient management</small>
+                        </div>
+                        <div class="schema-item">
+                            <h4>doctors_schema</h4>
+                            <p>2 tables</p>
+                            <small>Medical professionals</small>
+                        </div>
+                        <div class="schema-item">
+                            <h4>appointments_schema</h4>
+                            <p>3 tables</p>
+                            <small>Appointment system</small>
+                        </div>
+                        <div class="schema-item">
+                            <h4>parameterization_schema</h4>
+                            <p>4 tables</p>
+                            <small>System configuration</small>
+                        </div>
+                        <div class="schema-item">
+                            <h4>security_schema</h4>
+                            <p>1 table</p>
+                            <small>User authentication</small>
+                        </div>
+                    </div>
+                    <p><strong>Total:</strong> 12 tables across 5 schemas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schemas Section -->
+    <section id="schemas" class="content-section">
+        <div class="container">
+            <h2>Database Schemas</h2>
+            <p>Detailed SQL schema definitions for each module</p>
+
+            <div class="content-card">
+                <h3>📋 Complete SQL Schema</h3>
+                <div class="code-block">
+-- Patients Schema
+CREATE SCHEMA patients_schema;
+
+CREATE TABLE patients_schema.patient (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    birth_date DATE,
+    phone VARCHAR(20),
+    email VARCHAR(150)
+);
+
+CREATE TABLE patients_schema.medical_history (
+    id BIGSERIAL PRIMARY KEY,
+    patient_id BIGINT NOT NULL REFERENCES patients_schema.patient(id),
+    description TEXT NOT NULL,
+    date TIMESTAMP NOT NULL
+);
+
+-- Doctors Schema
+CREATE SCHEMA doctors_schema;
+
+CREATE TABLE doctors_schema.doctor (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    specialty_id BIGINT NOT NULL REFERENCES parameterization_schema.specialty(id),
+    phone VARCHAR(20),
+    email VARCHAR(150)
+);
+
+CREATE TABLE doctors_schema.shift (
+    id BIGSERIAL PRIMARY KEY,
+    doctor_id BIGINT NOT NULL REFERENCES doctors_schema.doctor(id),
+    date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL
+);
+
+-- Appointments Schema
+CREATE SCHEMA appointments_schema;
+
+CREATE TABLE appointments_schema.hospital (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    address TEXT
+);
+
+CREATE TABLE appointments_schema.room (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    hospital_id BIGINT NOT NULL REFERENCES appointments_schema.hospital(id)
+);
+
+CREATE TABLE appointments_schema.appointment (
+    id BIGSERIAL PRIMARY KEY,
+    patient_id BIGINT NOT NULL REFERENCES patients_schema.patient(id),
+    doctor_id BIGINT NOT NULL REFERENCES doctors_schema.doctor(id),
+    room_id BIGINT REFERENCES appointments_schema.room(id),
+    appointment_type_id BIGINT NOT NULL REFERENCES parameterization_schema.appointment_type(id),
+    status_id BIGINT NOT NULL REFERENCES parameterization_schema.appointment_status(id),
+    date DATE NOT NULL,
+    time TIME NOT NULL
+);
+
+-- Parameterization Schema
+CREATE SCHEMA parameterization_schema;
+
+CREATE TABLE parameterization_schema.role (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE parameterization_schema.appointment_type (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE parameterization_schema.appointment_status (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE parameterization_schema.specialty (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+-- Security Schema
+CREATE SCHEMA security_schema;
+
+CREATE TABLE security_schema.user (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role_id BIGINT NOT NULL REFERENCES parameterization_schema.role(id),
+    patient_id BIGINT REFERENCES patients_schema.patient(id),
+    doctor_id BIGINT REFERENCES doctors_schema.doctor(id),
+    active BOOLEAN DEFAULT TRUE
+);
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MER Diagram Section -->
+    <section id="mer" class="content-section">
+        <div class="container">
+            <h2>Entity-Relationship Model (MER)</h2>
+            <p>Complete MER diagram showing all entities and relationships</p>
+
+            <div class="diagram-container">
+                <img src="https://via.placeholder.com/800x600/2563eb/ffffff?text=MER+Diagram+Placeholder" alt="MER Diagram" />
+                <p><em>Note: PlantUML diagram would render here showing all entities and relationships</em></p>
+            </div>
+
+            <div class="content-card">
+                <h3>🔗 Key Relationships</h3>
+                <ul>
+                    <li><strong>Patient → Medical History:</strong> One-to-many (1:N)</li>
+                    <li><strong>Doctor → Shift:</strong> One-to-many (1:N)</li>
+                    <li><strong>Hospital → Room:</strong> One-to-many (1:N)</li>
+                    <li><strong>Room → Appointment:</strong> One-to-many (1:N)</li>
+                    <li><strong>Patient → Appointment:</strong> One-to-many (1:N)</li>
+                    <li><strong>Doctor → Appointment:</strong> One-to-many (1:N)</li>
+                    <li><strong>Appointment Type → Appointment:</strong> One-to-many (1:N)</li>
+                    <li><strong>Appointment Status → Appointment:</strong> One-to-many (1:N)</li>
+                    <li><strong>Specialty → Doctor:</strong> One-to-many (1:N)</li>
+                    <li><strong>Role → User:</strong> One-to-many (1:N)</li>
+                    <li><strong>Patient → User:</strong> Optional one-to-one (0:1)</li>
+                    <li><strong>Doctor → User:</strong> Optional one-to-one (0:1)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Relationships Section -->
+    <section id="relationships" class="content-section">
+        <div class="container">
+            <h2>Data Relationships</h2>
+            <p>Cross-schema relationships and data flow between modules</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>🔄 Cross-Schema Relationships</h3>
+                    <p>Relationships that span multiple database schemas:</p>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Source Schema</th>
+                                <th>Target Schema</th>
+                                <th>Relationship</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>appointments_schema</td>
+                                <td>patients_schema</td>
+                                <td>appointment.patient_id → patient.id</td>
+                            </tr>
+                            <tr>
+                                <td>appointments_schema</td>
+                                <td>doctors_schema</td>
+                                <td>appointment.doctor_id → doctor.id</td>
+                            </tr>
+                            <tr>
+                                <td>doctors_schema</td>
+                                <td>parameterization_schema</td>
+                                <td>doctor.specialty_id → specialty.id</td>
+                            </tr>
+                            <tr>
+                                <td>appointments_schema</td>
+                                <td>parameterization_schema</td>
+                                <td>appointment.appointment_type_id → appointment_type.id</td>
+                            </tr>
+                            <tr>
+                                <td>appointments_schema</td>
+                                <td>parameterization_schema</td>
+                                <td>appointment.status_id → appointment_status.id</td>
+                            </tr>
+                            <tr>
+                                <td>security_schema</td>
+                                <td>parameterization_schema</td>
+                                <td>user.role_id → role.id</td>
+                            </tr>
+                            <tr>
+                                <td>security_schema</td>
+                                <td>patients_schema</td>
+                                <td>user.patient_id → patient.id (optional)</td>
+                            </tr>
+                            <tr>
+                                <td>security_schema</td>
+                                <td>doctors_schema</td>
+                                <td>user.doctor_id → doctor.id (optional)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎯 Data Integrity</h3>
+                    <p>Database constraints and referential integrity:</p>
+
+                    <h4>Primary Keys:</h4>
+                    <ul>
+                        <li>All tables have BIGSERIAL primary keys</li>
+                        <li>Auto-increment for new records</li>
+                        <li>Unique identification across schemas</li>
+                    </ul>
+
+                    <h4>Foreign Keys:</h4>
+                    <ul>
+                        <li>Referential integrity maintained</li>
+                        <li>Cascade operations where appropriate</li>
+                        <li>Optional relationships with NULL allowed</li>
+                    </ul>
+
+                    <h4>Constraints:</h4>
+                    <ul>
+                        <li>NOT NULL for required fields</li>
+                        <li>Unique constraints on usernames/emails</li>
+                        <li>Check constraints for data validation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Hospital Appointment Management System</h3>
+            <p>Complete database design and MER documentation</p>
+            <p>© 2024 - PostgreSQL with 5 schemas and 12 tables</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
