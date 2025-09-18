@@ -13,7 +13,7 @@ import java.util.List;
  * @param <ID> The entity's primary key type
  */
 @NoRepositoryBean
-public interface IRepository<T, ID> extends JpaRepository<T, ID> {
+public interface IRepository<T extends BaseEntity, ID> extends JpaRepository<T, ID> {
 
     /**
      * Find all entities that are not soft deleted
