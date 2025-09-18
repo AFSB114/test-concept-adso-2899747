@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Hospital Appointment Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🏥 HAMS</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="#patients">Patients</a></li>
+                <li><a href="#doctors">Doctors</a></li>
+                <li><a href="#appointments">Appointments</a></li>
+                <li><a href="#parameterization">Parameterization</a></li>
+                <li><a href="#security">Security</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>REST API Documentation</h1>
+            <p>Complete RESTful API endpoints for all system modules</p>
+        </div>
+    </section>
+
+    <!-- API Overview -->
+    <section class="content-section">
+        <div class="container">
+            <div class="content-card">
+                <h3>🌐 API Overview</h3>
+                <p><strong>Base URL:</strong> http://localhost:8080/api</p>
+                <p><strong>Authentication:</strong> JWT Bearer Token</p>
+                <p><strong>Content-Type:</strong> application/json</p>
+                <p><strong>Response Format:</strong> JSON</p>
+
+                <h4>📋 HTTP Status Codes:</h4>
+                <ul>
+                    <li><strong>200 OK:</strong> Successful request</li>
+                    <li><strong>201 Created:</strong> Resource created</li>
+                    <li><strong>400 Bad Request:</strong> Invalid request data</li>
+                    <li><strong>401 Unauthorized:</strong> Authentication required</li>
+                    <li><strong>403 Forbidden:</strong> Insufficient permissions</li>
+                    <li><strong>404 Not Found:</strong> Resource not found</li>
+                    <li><strong>500 Internal Server Error:</strong> Server error</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patients API -->
+    <section id="patients" class="content-section">
+        <div class="container">
+            <h2>👥 Patients API</h2>
+            <p>Manage patient information and medical history</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Patient Operations</h3>
+                    <div class="code-block">
+GET    /api/patients              # List all patients
+GET    /api/patients/{id}         # Get patient by ID
+POST   /api/patients              # Create new patient
+PUT    /api/patients/{id}         # Update patient
+DELETE /api/patients/{id}         # Delete patient
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Medical History Operations</h3>
+                    <div class="code-block">
+GET    /api/patients/{id}/history # Get patient history
+POST   /api/patients/{id}/history # Add medical record
+PUT    /api/patients/{id}/history/{recordId} # Update record
+DELETE /api/patients/{id}/history/{recordId} # Delete record
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Request/Response Examples</h3>
+                    <h4>Create Patient:</h4>
+                    <div class="code-block">
+POST /api/patients
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "name": "John",
+  "lastName": "Doe",
+  "birthDate": "1990-01-01",
+  "phone": "+1234567890",
+  "email": "john.doe@email.com"
+}
+                    </div>
+
+                    <h4>Response:</h4>
+                    <div class="code-block">
+HTTP 201 Created
+{
+  "id": 1,
+  "name": "John",
+  "lastName": "Doe",
+  "birthDate": "1990-01-01",
+  "phone": "+1234567890",
+  "email": "john.doe@email.com"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctors API -->
+    <section id="doctors" class="content-section">
+        <div class="container">
+            <h2>👨‍⚕️ Doctors API</h2>
+            <p>Manage medical professionals and their schedules</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Doctor Operations</h3>
+                    <div class="code-block">
+GET    /api/doctors               # List all doctors
+GET    /api/doctors/{id}          # Get doctor by ID
+POST   /api/doctors               # Create new doctor
+PUT    /api/doctors/{id}          # Update doctor
+DELETE /api/doctors/{id}          # Delete doctor
+GET    /api/doctors/specialty/{id} # Doctors by specialty
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Schedule Operations</h3>
+                    <div class="code-block">
+GET    /api/doctors/{id}/shifts   # Get doctor shifts
+POST   /api/doctors/{id}/shifts   # Add new shift
+PUT    /api/doctors/{id}/shifts/{shiftId} # Update shift
+DELETE /api/doctors/{id}/shifts/{shiftId} # Delete shift
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Create Doctor Example</h3>
+                    <div class="code-block">
+POST /api/doctors
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "name": "Dr. Jane",
+  "lastName": "Smith",
+  "specialtyId": 1,
+  "phone": "+1234567890",
+  "email": "jane.smith@hospital.com"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointments API -->
+    <section id="appointments" class="content-section">
+        <div class="container">
+            <h2>📅 Appointments API</h2>
+            <p>Manage medical appointments and facilities</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Appointment Operations</h3>
+                    <div class="code-block">
+GET    /api/appointments          # List all appointments
+GET    /api/appointments/{id}     # Get appointment by ID
+POST   /api/appointments          # Create new appointment
+PUT    /api/appointments/{id}     # Update appointment
+DELETE /api/appointments/{id}     # Delete appointment
+GET    /api/appointments/patient/{id} # Patient appointments
+GET    /api/appointments/doctor/{id}  # Doctor appointments
+GET    /api/appointments/date/{date}  # Appointments by date
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Facility Operations</h3>
+                    <div class="code-block">
+GET    /api/hospitals             # List all hospitals
+GET    /api/hospitals/{id}        # Get hospital by ID
+GET    /api/rooms                 # List all rooms
+GET    /api/rooms/{id}            # Get room by ID
+GET    /api/rooms/hospital/{id}   # Rooms by hospital
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Book Appointment Example</h3>
+                    <div class="code-block">
+POST /api/appointments
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "patientId": 1,
+  "doctorId": 2,
+  "roomId": 3,
+  "appointmentTypeId": 1,
+  "statusId": 1,
+  "date": "2024-01-15",
+  "time": "10:00:00"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parameterization API -->
+    <section id="parameterization" class="content-section">
+        <div class="container">
+            <h2>⚙️ Parameterization API</h2>
+            <p>Manage system configuration and master data</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Configuration Operations</h3>
+                    <div class="code-block">
+GET    /api/roles                 # List all roles
+GET    /api/appointment-types     # List appointment types
+GET    /api/appointment-statuses  # List appointment statuses
+GET    /api/specialties           # List medical specialties
+POST   /api/roles                 # Create new role
+POST   /api/appointment-types     # Create appointment type
+POST   /api/appointment-statuses  # Create appointment status
+POST   /api/specialties           # Create specialty
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Master Data Examples</h3>
+                    <h4>Appointment Types:</h4>
+                    <div class="code-block">
+[
+  {
+    "id": 1,
+    "name": "General Consultation",
+    "description": "Regular check-up"
+  },
+  {
+    "id": 2,
+    "name": "Specialist Consultation",
+    "description": "Specialized medical consultation"
+  }
+]
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Appointment Statuses</h3>
+                    <div class="code-block">
+[
+  {
+    "id": 1,
+    "name": "Scheduled"
+  },
+  {
+    "id": 2,
+    "name": "Confirmed"
+  },
+  {
+    "id": 3,
+    "name": "Completed"
+  },
+  {
+    "id": 4,
+    "name": "Cancelled"
+  }
+]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security API -->
+    <section id="security" class="content-section">
+        <div class="container">
+            <h2>🔐 Security API</h2>
+            <p>User authentication and authorization endpoints</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Authentication Operations</h3>
+                    <div class="code-block">
+POST   /api/auth/login            # User login
+POST   /api/auth/register         # User registration
+POST   /api/auth/refresh          # Refresh JWT token
+POST   /api/auth/logout           # User logout
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>User Management</h3>
+                    <div class="code-block">
+GET    /api/users                 # List all users
+GET    /api/users/{id}            # Get user by ID
+POST   /api/users                 # Create new user
+PUT    /api/users/{id}            # Update user
+DELETE /api/users/{id}            # Delete user
+GET    /api/users/profile         # Get current user profile
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Login Example</h3>
+                    <div class="code-block">
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "john.doe",
+  "password": "password123"
+}
+                    </div>
+
+                    <h4>Response:</h4>
+                    <div class="code-block">
+HTTP 200 OK
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "username": "john.doe",
+    "role": "PATIENT"
+  },
+  "expiresIn": 3600
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Error Handling -->
+    <section class="content-section">
+        <div class="container">
+            <h2>Error Handling</h2>
+            <p>Standardized error response format</p>
+
+            <div class="content-card">
+                <h3>❌ Error Response Format</h3>
+                <div class="code-block">
+HTTP 400 Bad Request
+{
+  "timestamp": "2024-01-15T10:30:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Validation failed",
+  "path": "/api/patients",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Email is required"
+    },
+    {
+      "field": "phone",
+      "message": "Phone must be valid"
+    }
+  ]
+}
+                </div>
+
+                <h4>🔍 Common Error Scenarios:</h4>
+                <ul>
+                    <li><strong>Validation Errors:</strong> Invalid input data</li>
+                    <li><strong>Authentication Errors:</strong> Invalid or expired tokens</li>
+                    <li><strong>Authorization Errors:</strong> Insufficient permissions</li>
+                    <li><strong>Not Found Errors:</strong> Resource doesn't exist</li>
+                    <li><strong>Conflict Errors:</strong> Resource already exists</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Hospital Appointment Management System</h3>
+            <p>Complete REST API documentation with examples</p>
+            <p>© 2024 - RESTful API with JWT authentication</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

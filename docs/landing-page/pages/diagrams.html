@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrams - Hospital Appointment Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🏥 HAMS</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="#use-case">Use Case</a></li>
+                <li><a href="#classes">Classes</a></li>
+                <li><a href="#sequence">Sequence</a></li>
+                <li><a href="#packages">Packages</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>UML Diagrams</h1>
+            <p>Complete PlantUML documentation with all system diagrams</p>
+        </div>
+    </section>
+
+    <!-- Use Case Diagram -->
+    <section id="use-case" class="content-section">
+        <div class="container">
+            <h2>Use Case Diagram</h2>
+            <p>System actors and their interactions with the application</p>
+
+            <div class="diagram-container">
+                <img src="https://via.placeholder.com/800x400/2563eb/ffffff?text=Use+Case+Diagram+Placeholder" alt="Use Case Diagram" />
+            </div>
+
+            <div class="content-card">
+                <h3>📋 Diagram Details</h3>
+                <p><strong>Actors:</strong></p>
+                <ul>
+                    <li><strong>Patient:</strong> End user who books appointments and views medical history</li>
+                    <li><strong>Doctor:</strong> Medical professional who manages appointments and patient records</li>
+                    <li><strong>Administrator:</strong> System administrator who manages all aspects</li>
+                </ul>
+
+                <p><strong>Use Cases:</strong></p>
+                <ul>
+                    <li>Agendar Cita - Book new appointments</li>
+                    <li>Ver Historial Médico - View patient medical records</li>
+                    <li>Ver Citas Asignadas - View scheduled appointments</li>
+                    <li>Actualizar Historial Médico - Update patient records</li>
+                    <li>Gestionar Pacientes - CRUD operations for patients</li>
+                    <li>Gestionar Médicos - CRUD operations for doctors</li>
+                    <li>Gestionar Citas - CRUD operations for appointments</li>
+                    <li>Gestionar Hospitales y Salas - Manage facilities</li>
+                    <li>Parametrizar Tipos y Estados - Configure system parameters</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Class Diagram -->
+    <section id="classes" class="content-section">
+        <div class="container">
+            <h2>Class Diagram (MER)</h2>
+            <p>Entity-Relationship Model showing all database entities and relationships</p>
+
+            <div class="diagram-container">
+                <img src="https://via.placeholder.com/800x600/2563eb/ffffff?text=Class+Diagram+Placeholder" alt="Class Diagram" />
+            </div>
+
+            <div class="content-card">
+                <h3>🏗️ Schema Organization</h3>
+
+                <h4>patients_schema:</h4>
+                <ul>
+                    <li><strong>patient:</strong> Personal information (id, name, last_name, birth_date, phone, email)</li>
+                    <li><strong>medical_history:</strong> Medical records (id, patient_id, description, date)</li>
+                </ul>
+
+                <h4>doctors_schema:</h4>
+                <ul>
+                    <li><strong>doctor:</strong> Professional information (id, name, last_name, specialty_id, phone, email)</li>
+                    <li><strong>shift:</strong> Work schedules (id, doctor_id, date, start_time, end_time)</li>
+                </ul>
+
+                <h4>appointments_schema:</h4>
+                <ul>
+                    <li><strong>appointment:</strong> Appointment details (id, patient_id, doctor_id, room_id, appointment_type_id, status_id, date, time)</li>
+                    <li><strong>room:</strong> Facility rooms (id, name, hospital_id)</li>
+                    <li><strong>hospital:</strong> Medical centers (id, name, address)</li>
+                </ul>
+
+                <h4>parameterization_schema:</h4>
+                <ul>
+                    <li><strong>role:</strong> User roles (id, name)</li>
+                    <li><strong>appointment_type:</strong> Consultation types (id, name, description)</li>
+                    <li><strong>appointment_status:</strong> Status options (id, name)</li>
+                    <li><strong>specialty:</strong> Medical specialties (id, name, description)</li>
+                </ul>
+
+                <h4>security_schema:</h4>
+                <ul>
+                    <li><strong>user:</strong> Authentication data (id, username, password, role_id, patient_id, doctor_id, active)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sequence Diagram -->
+    <section id="sequence" class="content-section">
+        <div class="container">
+            <h2>Sequence Diagram</h2>
+            <p>Appointment booking process showing interaction between actors</p>
+
+            <div class="diagram-container">
+                <img src="https://via.placeholder.com/800x500/2563eb/ffffff?text=Sequence+Diagram+Placeholder" alt="Sequence Diagram" />
+            </div>
+
+            <div class="content-card">
+                <h3>🔄 Process Flow</h3>
+                <ol>
+                    <li><strong>Patient</strong> requests to book an appointment</li>
+                    <li><strong>System</strong> displays available doctors</li>
+                    <li><strong>Patient</strong> selects doctor and preferred date/time</li>
+                    <li><strong>System</strong> checks doctor's availability</li>
+                    <li><strong>Doctor</strong> confirms availability</li>
+                    <li><strong>System</strong> confirms appointment booking</li>
+                    <li><strong>Doctor</strong> receives notification of new appointment</li>
+                </ol>
+
+                <h4>🎯 Key Interactions:</h4>
+                <ul>
+                    <li>User interface interactions</li>
+                    <li>Business logic validation</li>
+                    <li>Database operations</li>
+                    <li>Notification systems</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Package Diagram -->
+    <section id="packages" class="content-section">
+        <div class="container">
+            <h2>Package Diagram</h2>
+            <p>Module organization and dependencies in the microservices architecture</p>
+
+            <div class="diagram-container">
+                <img src="https://via.placeholder.com/800x400/2563eb/ffffff?text=Package+Diagram+Placeholder" alt="Package Diagram" />
+            </div>
+
+            <div class="content-card">
+                <h3>📦 Module Structure</h3>
+
+                <h4>🏗️ Architecture Layers:</h4>
+                <ul>
+                    <li><strong>Spring Boot Application:</strong> Main application container</li>
+                    <li><strong>Module Controllers:</strong> REST API endpoints</li>
+                    <li><strong>Module Services:</strong> Business logic implementation</li>
+                    <li><strong>Module Repositories:</strong> Data access layer</li>
+                    <li><strong>Module Models:</strong> JPA entities</li>
+                    <li><strong>Database Schemas:</strong> PostgreSQL schema separation</li>
+                </ul>
+
+                <h4>🔗 Dependencies:</h4>
+                <ul>
+                    <li>Each module depends on Spring Boot Application</li>
+                    <li>Modules communicate through well-defined APIs</li>
+                    <li>Database schemas provide data isolation</li>
+                    <li>Shared components in common modules</li>
+                </ul>
+
+                <h4>🎯 Benefits:</h4>
+                <ul>
+                    <li>Clear separation of concerns</li>
+                    <li>Independent module development</li>
+                    <li>Easier testing and maintenance</li>
+                    <li>Scalable architecture</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- PlantUML Source -->
+    <section class="content-section">
+        <div class="container">
+            <h2>PlantUML Source Code</h2>
+            <p>All diagrams are generated from PlantUML source files for version control and maintainability</p>
+
+            <div class="content-card">
+                <h3>📁 Source Files Location</h3>
+                <div class="code-block">
+docs/diagrams/
+├── casos-de-uso.wsd      # Use Case Diagram
+├── clases.wsd            # Class Diagram (MER)
+├── secuencia.wsd         # Sequence Diagram
+└── paquetes.wsd          # Package Diagram
+                </div>
+
+                <h4>🛠️ PlantUML Features Used:</h4>
+                <ul>
+                    <li><strong>@startuml/@enduml:</strong> Diagram boundaries</li>
+                    <li><strong>package:</strong> Schema organization</li>
+                    <li><strong>class:</strong> Entity definitions</li>
+                    <li><strong>||--o{ }:</strong> Relationship notation</li>
+                    <li><strong>actor:</strong> System actors</li>
+                    <li><strong>usecase:</strong> System functionalities</li>
+                    <li><strong>note:</strong> Additional documentation</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Hospital Appointment Management System</h3>
+            <p>Complete UML diagram documentation with PlantUML</p>
+            <p>© 2024 - 4 comprehensive diagrams covering all system aspects</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
