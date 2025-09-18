@@ -47,7 +47,6 @@ package "appointments_schema" {
         +patient_id: Long
         +doctor_id: Long
         +room_id: Long
-        +hospital_id: Long
         +appointment_type_id: Long
         +status_id: Long
         +date: Date
