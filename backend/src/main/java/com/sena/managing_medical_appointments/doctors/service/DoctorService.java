@@ -5,6 +5,7 @@ import com.sena.managing_medical_appointments.doctors.model.dto.req.DoctorReques
 import com.sena.managing_medical_appointments.doctors.model.dto.res.DoctorResponseDTO;
 import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
 import com.sena.managing_medical_appointments.doctors.repository.IDoctorRepository;
+import com.sena.managing_medical_appointments.parameterization.model.entity.Specialty;
 import com.sena.managing_medical_appointments.shared.AbstractService;
 import com.sena.managing_medical_appointments.shared.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +30,24 @@ public class DoctorService extends AbstractService<Doctor, DoctorRequestDTO, Doc
     public DoctorResponseDTO mapToResDto(Doctor entity) {
         DoctorResponseDTO response = new DoctorResponseDTO();
         response.setId(entity.getId());
-        response.setFirstName(entity.getFirstName());
+        response.setName(entity.getName());
         response.setLastName(entity.getLastName());
         response.setEmail(entity.getEmail());
         response.setPhone(entity.getPhone());
-        response.setSpecialtyId(entity.getSpecialtyId());
+        response.setSpecialtyId(entity.getSpecialty().getId());
         return response;
     }
 
     @Override
     public Doctor mapToEntity(DoctorRequestDTO request) {
+        Specialty specialty = new Specialty();
+        specialty.setId(request.getSpecialtyId());
         Doctor entity = new Doctor();
-        entity.setFirstName(request.getFirstName());
+        entity.setName(request.getName());
         entity.setLastName(request.getLastName());
         entity.setEmail(request.getEmail());
         entity.setPhone(request.getPhone());
-        entity.setSpecialtyId(request.getSpecialtyId());
+        entity.setSpecialty(specialty);
         return entity;
     }
 }

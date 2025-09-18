@@ -16,7 +16,7 @@ public class DoctorResponseDTO extends BaseResponseDTO {
     private String lastName;
 
     @Schema(description = "Doctor's specialty name", example = "Cardiology")
-    private String specialtyName;
+    private Long specialtyId;
 
     @Schema(description = "Doctor's phone number", example = "+1234567890")
     private String phone;
