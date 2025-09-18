@@ -20,53 +20,6 @@ This document describes the backend architecture for the **Hospital Appointment 
 - **Maven**: Dependency management and build.
 - **Git**: Version control.
 
-## Swagger/OpenAPI Configuration
-
-The project uses SpringDoc OpenAPI for automatic API documentation.
-
-### Dependency
-
-Add to pom.xml:
-
-```xml
-<dependency>
-    <groupId>org.springdoc</groupId>
-    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.2.0</version>
-</dependency>
-```
-
-### Configuration
-
-Create `SwaggerConfig.java` in the `config` package:
-
-```java
-package com.sena.managing_medical_appointments.config;
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class SwaggerConfig {
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("Hospital Appointment Management System API")
-                        .version("1.0")
-                        .description("API for managing hospital appointments, patients, doctors, and parameterization"));
-    }
-}
-```
-
-### Access
-
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- API Docs: http://localhost:8080/v3/api-docs
-
 ## General Architecture
 
 The system follows a modular architecture with clear responsibility separation. Each module handles a specific part of the business domain, maintaining organized and maintainable code.
@@ -132,6 +85,7 @@ Contains system master data and configurations.
 ### Security Module
 Manages user access credentials.
 - **user**: User authentication information
+- **Note**: Patients and doctors have a one-to-one relationship with users for authentication purposes
 
 ## REST API
 
@@ -202,7 +156,8 @@ CREATE TABLE patient (
     last_name VARCHAR(100) NOT NULL,
     birth_date DATE,
     phone VARCHAR(20),
-    email VARCHAR(150)
+    email VARCHAR(150),
+    user_id BIGINT REFERENCES security_schema.user(id)
 );
 
 CREATE TABLE medical_history (
@@ -221,7 +176,8 @@ CREATE TABLE doctor (
     last_name VARCHAR(100) NOT NULL,
     specialty_id BIGINT NOT NULL REFERENCES parameterization_schema.specialty(id),
     phone VARCHAR(20),
-    email VARCHAR(150)
+    email VARCHAR(150),
+    user_id BIGINT REFERENCES security_schema.user(id)
 );
 
 CREATE TABLE shift (
@@ -291,8 +247,6 @@ CREATE TABLE user (
     username VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role_id BIGINT NOT NULL REFERENCES parameterization_schema.role(id),
-    patient_id BIGINT REFERENCES patients_schema.patient(id),
-    doctor_id BIGINT REFERENCES doctors_schema.doctor(id),
     active BOOLEAN DEFAULT TRUE
 );
 ```
