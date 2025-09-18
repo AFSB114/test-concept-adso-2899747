@@ -1,23 +1,23 @@
-# Diagrama de Clases UML
+# UML Class Diagram
 
-**Archivo PlantUML:** `clases-uml.wsd`
+**PlantUML File:** `clases-uml.wsd`
 
 ```plantuml
-@startuml Diagrama de Clases UML
+@startuml UML Class Diagram
 
-class Paciente {
+class Patient {
     +id: Long
 }
 
-class Medico {
+class Doctor {
     +id: Long
 }
 
-class Cita {
+class Appointment {
     +id: Long
 }
 
-class Sala {
+class Room {
     +id: Long
 }
 
@@ -25,52 +25,52 @@ class Hospital {
     +id: Long
 }
 
-class HistorialMedico {
+class MedicalHistory {
     +id: Long
 }
 
-class Turno {
+class Shift {
     +id: Long
 }
 
-class Usuario {
+class User {
     +id: Long
 }
 
-class Rol {
+class Role {
     +id: Long
 }
 
-class TipoCita {
+class AppointmentType {
     +id: Long
 }
 
-class EstadoCita {
+class AppointmentStatus {
     +id: Long
 }
 
-class Especialidad {
+class Specialty {
     +id: Long
 }
 
-' Relaciones de composición
-Hospital *-- Sala
-Sala *-- Cita
-Paciente *-- HistorialMedico
-Medico *-- Turno
+' Composition relationships
+Hospital *-- Room
+Room *-- Appointment
+Patient *-- MedicalHistory
+Doctor *-- Shift
 
-' Relaciones de asociación
-Paciente o-- Usuario
-Medico o-- Usuario
-Usuario --> Rol
-Cita --> TipoCita
-Cita --> EstadoCita
-Medico --> Especialidad
-Cita --> Paciente
-Cita --> Medico
-Cita --> Sala
-Sala --> Hospital
-HistorialMedico --> Paciente
-Turno --> Medico
+' Association relationships
+Patient o-- User
+Doctor o-- User
+User --> Role
+Appointment --> AppointmentType
+Appointment --> AppointmentStatus
+Doctor --> Specialty
+Appointment --> Patient
+Appointment --> Doctor
+Appointment --> Room
+Room --> Hospital
+MedicalHistory --> Patient
+Shift --> Doctor
 
 @enduml

@@ -1,104 +1,104 @@
-# Historia de Usuario: HU-Documentación
+# User Story: HU-Documentation
 
-## Descripción
-Como aprendiz, necesito crear y refinar toda la documentación del proyecto "Sistema de Gestión de Citas Hospitalarias" para que el evaluador pueda entender completamente la arquitectura, funcionalidad y estructura del sistema.
+## Description
+As a learner, I need to create and refine all the documentation for the "Hospital Appointment Management System" project so that the evaluator can fully understand the architecture, functionality, and structure of the system.
 
-## Criterios de Aceptación
-- [x] Diagramas UML completos (Casos de Uso, Clases, Secuencia, Paquetes) en PlantUML
-- [x] Arquitectura refactorizada a Java/Spring Boot con módulos
-- [x] Modelo Entidad-Relación (MER) separado por esquemas de BD
-- [x] Diagrama de clases UML con relaciones de composición
-- [x] Landing Page con presentación gráfica actualizada
-- [x] Arquitectura del backend documentada y simplificada
-- [x] Estructura de carpetas clara por módulos
-- [x] Entidades organizadas en 5 módulos con esquemas separados
-- [x] Diagramas organizados por carpetas (usecase, class, sequence, package)
-- [x] Flujo Git implementado correctamente (develop → QA → release → main)
+## Acceptance Criteria
+- [x] Complete UML diagrams (Use Cases, Classes, Sequence, Packages) in PlantUML
+- [x] Architecture refactored to Java/Spring Boot with modules
+- [x] Entity-Relationship Model (MER) separated by database schemas
+- [x] UML Class diagram with composition relationships
+- [x] Landing Page with updated graphical presentation
+- [x] Backend architecture documented and simplified
+- [x] Clear folder structure by modules
+- [x] Entities organized in 5 modules with separate schemas
+- [x] Diagrams organized by folders (usecase, class, sequence, package)
+- [x] Git flow implemented correctly (develop → QA → release → main)
 
-## Tareas Realizadas
+## Tasks Completed
 
-### Arquitectura y Modelado
-- [x] **Refactorización tecnológica**: Cambio de Node.js/Express a Java/Spring Boot
-- [x] **Arquitectura modular**: 5 módulos (Pacientes, Médicos, Citas, Parametrización, Seguridad)
-- [x] **Esquemas de BD**: Separación por módulos en PostgreSQL
-- [x] **Patrón MVC**: Implementado por módulo con JpaRepository
+### Architecture and Modeling
+- [x] **Technological refactoring**: Change from Node.js/Express to Java/Spring Boot
+- [x] **Modular architecture**: 5 modules (Patients, Doctors, Appointments, Parameterization, Security)
+- [x] **Database schemas**: Separation by modules in PostgreSQL
+- [x] **MVC pattern**: Implemented by module with JpaRepository
 
-### Diagramas UML en PlantUML
-- [x] **Diagrama de Casos de Uso**: Separado por paquetes (Paciente, Médico, Administrador)
-- [x] **Diagrama de Clases (MER)**: Solo atributos, separado por esquemas
-- [x] **Diagrama de Clases UML**: Solo IDs, relaciones de composición
-- [x] **Diagrama de Secuencia**: Flujo de agendar cita
-- [x] **Diagrama de Paquetes**: Arquitectura modular con esquemas
+### UML Diagrams in PlantUML
+- [x] **Use Cases Diagram**: Separated by packages (Patient, Doctor, Administrator)
+- [x] **Classes Diagram (MER)**: Only attributes, separated by schemas
+- [x] **UML Classes Diagram**: Only IDs, composition relationships
+- [x] **Sequence Diagram**: Appointment scheduling flow
+- [x] **Package Diagram**: Modular architecture with schemas
 
-### Documentación Técnica
-- [x] **Arquitectura Backend**: Documento simplificado y práctico
-- [x] **API REST**: Endpoints CRUD por módulo
-- [x] **Base de Datos**: Esquemas SQL detallados
-- [x] **Landing Page**: Actualizada con nueva arquitectura
+### Technical Documentation
+- [x] **Backend Architecture**: Simplified and practical document
+- [x] **REST API**: CRUD endpoints by module
+- [x] **Database**: Detailed SQL schemas
+- [x] **Landing Page**: Updated with new architecture
 
-### Organización
-- [x] **Estructura de carpetas**: Diagramas organizados por tipo
-- [x] **Entidades**: 12+ entidades en 5 módulos
-- [x] **Módulos**: Pacientes (2), Médicos (2), Citas (3), Parametrización (4), Seguridad (1)
+### Organization
+- [x] **Folder structure**: Diagrams organized by type
+- [x] **Entities**: 12+ entities in 5 modules
+- [x] **Modules**: Patients (2), Doctors (2), Appointments (3), Parameterization (4), Security (1)
 
-### Control de Versiones
-- [x] **Flujo Git**: develop → QA → release → main
-- [x] **HU Documentación**: Rama develop con todos los cambios
-- [x] **Conexión GitHub**: Repositorio remoto configurado
+### Version Control
+- [x] **Git flow**: develop → QA → release → main
+- [x] **HU Documentation**: develop branch with all changes
+- [x] **GitHub connection**: Remote repository configured
 
-## Entidades por Módulo
+## Entities by Module
 
-### Módulo Pacientes (pacientes_schema)
-- **Paciente**: Datos personales y contacto
-- **HistorialMedico**: Registros médicos
+### Patients Module (patients_schema)
+- **Patient**: Personal data and contact
+- **MedicalHistory**: Patient medical records
 
-### Módulo Médicos (medicos_schema)
-- **Medico**: Información del profesional
-- **Turno**: Horarios de trabajo
+### Doctors Module (doctors_schema)
+- **Doctor**: Medical professional information
+- **Shift**: Doctor work schedules
 
-### Módulo Citas (citas_schema)
-- **Cita**: Información de la cita programada
-- **Sala**: Espacios físicos del hospital
-- **Hospital**: Centros médicos
+### Appointments Module (appointments_schema)
+- **Appointment**: Scheduled appointment information
+- **Room**: Hospital physical spaces
+- **Hospital**: Medical center information
 
-### Módulo Parametrización (parametrizacion_schema)
-- **Rol**: Roles de usuario
-- **TipoCita**: Tipos de consulta
-- **EstadoCita**: Estados de cita
-- **Especialidad**: Especialidades médicas
+### Parameterization Module (parameterization_schema)
+- **Role**: User roles in the system
+- **AppointmentType**: Available medical consultation types
+- **AppointmentStatus**: Possible appointment statuses
+- **Specialty**: Medical specialties
 
-### Módulo Seguridad (seguridad_schema)
-- **Usuario**: Credenciales de acceso
+### Security Module (security_schema)
+- **User**: User authentication information
 
-## Tecnologías Implementadas
-- **Java 17+**: Lenguaje principal
-- **Spring Boot 3.x**: Framework de desarrollo
-- **Spring Data JPA**: Acceso a datos
-- **PostgreSQL 15+**: Base de datos relacional
-- **Maven**: Gestión de dependencias
-- **PlantUML**: Diagramas de arquitectura
+## Implemented Technologies
+- **Java 17+**: Main language
+- **Spring Boot 3.x**: Development framework
+- **Spring Data JPA**: Data access
+- **PostgreSQL 15+**: Relational database
+- **Maven**: Dependency management
+- **PlantUML**: Architecture diagrams
 
-## Estructura Final del Proyecto
+## Final Project Structure
 ```
 docs/
 ├── diagrams/
-│   ├── usecase/     # Diagramas de casos de uso
-│   ├── class/       # Diagramas de clases
-│   ├── sequence/    # Diagramas de secuencia
-│   └── package/     # Diagramas de paquetes
-├── hu/             # Historias de usuario
-├── landing-page/   # Página de presentación
+│   ├── usecase/     # Use case diagrams
+│   ├── class/       # Class diagrams
+│   ├── sequence/    # Sequence diagrams
+│   └── package/     # Package diagrams
+├── hu/             # User stories
+├── landing-page/   # Presentation page
 └── arquitectura-backend.md
 
 backend/ (Java/Spring Boot)
 ├── src/main/java/com/hospital/
-│   ├── pacientes/     # Módulo Pacientes
-│   ├── medicos/       # Módulo Médicos
-│   ├── citas/         # Módulo Citas
-│   ├── parametrizacion/ # Módulo Parametrización
-│   └── seguridad/     # Módulo Seguridad
+│   ├── patients/
+│   ├── doctors/
+│   ├── appointments/
+│   ├── parameterization/
+│   └── security/
 └── pom.xml
 ```
 
-## Estado
-Completada - Rama develop con todos los cambios de documentación implementados y listos para revisión en QA.
+## Status
+Completed - develop branch with all documentation changes implemented and ready for QA review.

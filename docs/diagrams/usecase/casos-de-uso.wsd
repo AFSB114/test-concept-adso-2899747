@@ -1,30 +1,30 @@
-@startuml Casos de Uso
+@startuml Use Cases
 
 left to right direction
 
-actor "Paciente" as P
-actor "Médico" as M
-actor "Administrador" as A
+actor "Patient" as P
+actor "Doctor" as M
+actor "Administrator" as A
 
-package "Funcionalidades de Paciente" {
-    usecase "Agendar Cita" as UC1
-    usecase "Ver Historial Médico" as UC2
-    usecase "Iniciar Sesión" as UC3
+package "Patient Functionalities" {
+    usecase "Schedule Appointment" as UC1
+    usecase "View Medical History" as UC2
+    usecase "Login" as UC3
 }
 
-package "Funcionalidades de Médico" {
-    usecase "Ver Citas Asignadas" as UC4
-    usecase "Actualizar Historial Médico" as UC5
-    usecase "Iniciar Sesión" as UC6
+package "Doctor Functionalities" {
+    usecase "View Assigned Appointments" as UC4
+    usecase "Update Medical History" as UC5
+    usecase "Login" as UC6
 }
 
-package "Funcionalidades de Administrador" {
-    usecase "Gestionar Pacientes" as UC7
-    usecase "Gestionar Médicos" as UC8
-    usecase "Gestionar Citas" as UC9
-    usecase "Gestionar Hospitales y Salas" as UC10
-    usecase "Parametrizar Tipos y Estados" as UC11
-    usecase "Gestionar Usuarios y Roles" as UC12
+package "Administrator Functionalities" {
+    usecase "Manage Patients" as UC7
+    usecase "Manage Doctors" as UC8
+    usecase "Manage Appointments" as UC9
+    usecase "Manage Hospitals and Rooms" as UC10
+    usecase "Parameterize Types and States" as UC11
+    usecase "Manage Users and Roles" as UC12
 }
 
 P --> UC1
