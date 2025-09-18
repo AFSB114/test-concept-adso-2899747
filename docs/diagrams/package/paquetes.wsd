@@ -1,0 +1,69 @@
+@startuml Diagrama de Paquetes
+
+package "Módulo Pacientes" as P {
+    [PacienteController]
+    [PacienteService]
+    [PacienteRepository]
+    [Paciente]
+    [HistorialMedico]
+    note right : pacientes_schema
+}
+
+package "Módulo Médicos" as M {
+    [MedicoController]
+    [MedicoService]
+    [MedicoRepository]
+    [Medico]
+    [Turno]
+    note right : medicos_schema
+}
+
+package "Módulo Citas" as C {
+    [CitaController]
+    [CitaService]
+    [CitaRepository]
+    [Cita]
+    [Sala]
+    [Hospital]
+    note right : citas_schema
+}
+
+package "Módulo Parametrización" as Param {
+    [ParametrizacionController]
+    [ParametrizacionService]
+    [ParametrizacionRepository]
+    [Rol]
+    [TipoCita]
+    [EstadoCita]
+    [Especialidad]
+    note right : parametrizacion_schema
+}
+
+package "Módulo Seguridad" as S {
+    [SeguridadController]
+    [SeguridadService]
+    [SeguridadRepository]
+    [Usuario]
+    note right : seguridad_schema
+}
+
+package "Spring Boot Application" as App {
+    [HospitalApplication]
+    [Config Classes]
+}
+
+package "PostgreSQL Database" as DB
+
+App --> P
+App --> M
+App --> C
+App --> Param
+App --> S
+
+DB --> P : pacientes_schema
+DB --> M : medicos_schema
+DB --> C : citas_schema
+DB --> Param : parametrizacion_schema
+DB --> S : seguridad_schema
+
+@enduml

@@ -3,105 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Citas Hospitalarias</title>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true });
+    <title>Sistema de Gestión de Citas Hospitalarias - Java/Spring Boot</title>
+    <script src="https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/dist/plantuml-encoder.min.js"></script>
+    <script>
+        function renderPlantUML() {
+            const diagrams = document.querySelectorAll('pre.plantuml');
+            diagrams.forEach(pre => {
+                const code = pre.textContent;
+                const encoded = plantumlEncoder.encode(code);
+                const img = document.createElement('img');
+                img.src = `http://www.plantuml.com/plantuml/img/${encoded}`;
+                img.alt = 'Diagrama PlantUML';
+                pre.parentNode.replaceChild(img, pre);
+            });
+        }
+        window.onload = renderPlantUML;
     </script>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1, h2 { color: #333; }
         .diagram { margin: 20px 0; }
+        pre.plantuml { display: none; }
     </style>
 </head>
 <body>
     <h1>Sistema de Gestión de Citas Hospitalarias</h1>
-    <p>Este proyecto es un sistema completo para gestionar citas en un hospital. Incluye módulos para pacientes, médicos y citas, con 10 entidades principales y diagramas UML para la arquitectura.</p>
+    <p>Este proyecto es un sistema completo para gestionar citas en un hospital, desarrollado con Java y Spring Boot. Arquitectura orientada a microservicios en un monorepo, con módulos separados por responsabilidades y esquemas en PostgreSQL. Incluye 5 módulos principales con 12+ entidades y diagramas UML en PlantUML.</p>
+
+    <h2>Módulos del Sistema</h2>
+    <ul>
+        <li><strong>Pacientes</strong>: Gestión de pacientes y historial médico (esquema: pacientes_schema)</li>
+        <li><strong>Médicos</strong>: Gestión de médicos y turnos (esquema: medicos_schema)</li>
+        <li><strong>Citas</strong>: Gestión de citas, salas y hospitales (esquema: citas_schema)</li>
+        <li><strong>Parametrización</strong>: Roles, tipos de cita, estados y especialidades (esquema: parametrizacion_schema)</li>
+        <li><strong>Seguridad</strong>: Gestión de usuarios y autenticación (esquema: seguridad_schema)</li>
+    </ul>
 
     <h2>Diagrama de Casos de Uso</h2>
     <div class="diagram">
-        <pre class="mermaid">
-            graph TD
-                A[Paciente] --> B[Agendar Cita]
-                A --> C[Ver Historial Médico]
-                D[Médico] --> E[Ver Citas Asignadas]
-                D --> F[Actualizar Historial Médico]
-                G[Administrador] --> H[Gestionar Pacientes]
-                G --> I[Gestionar Médicos]
-                G --> J[Gestionar Citas]
-                G --> K[Gestionar Hospitales y Salas]
-        </pre>
+        <pre class="plantuml">@startuml Casos de Uso
+
+left to right direction
+
+actor "Paciente" as P
+actor "Médico" as M
+actor "Administrador" as A
+
+package "Funcionalidades de Paciente" {
+    usecase "Agendar Cita" as UC1
+    usecase "Ver Historial Médico" as UC2
+    usecase "Iniciar Sesión" as UC3
+}
+
+package "Funcionalidades de Médico" {
+    usecase "Ver Citas Asignadas" as UC4
+    usecase "Actualizar Historial Médico" as UC5
+    usecase "Iniciar Sesión" as UC6
+}
+
+package "Funcionalidades de Administrador" {
+    usecase "Gestionar Pacientes" as UC7
+    usecase "Gestionar Médicos" as UC8
+    usecase "Gestionar Citas" as UC9
+    usecase "Gestionar Hospitales y Salas" as UC10
+    usecase "Parametrizar Tipos y Estados" as UC11
+    usecase "Gestionar Usuarios y Roles" as UC12
+}
+
+P --> UC1
+P --> UC2
+P --> UC3
+
+M --> UC4
+M --> UC5
+M --> UC6
+
+A --> UC7
+A --> UC8
+A --> UC9
+A --> UC10
+A --> UC11
+A --> UC12
+
+@enduml</pre>
     </div>
 
-    <h2>Diagrama de Clases</h2>
+    <h2>Diagrama de Clases (MER)</h2>
     <div class="diagram">
-        <pre class="mermaid">
-            classDiagram
-                class Paciente {
-                    +id: int
-                    +nombre: string
-                    +apellido: string
-                    +fechaNacimiento: date
-                    +telefono: string
-                    +email: string
-                    +agendarCita()
-                    +verHistorial()
-                }
-                class Medico {
-                    +id: int
-                    +nombre: string
-                    +apellido: string
-                    +especialidadId: int
-                    +telefono: string
-                    +email: string
-                    +verCitas()
-                    +actualizarHistorial()
-                }
-                class Cita {
-                    +id: int
-                    +pacienteId: int
-                    +medicoId: int
-                    +fecha: date
-                    +hora: time
-                    +estado: string
-                }
-                Paciente ||--o{ Cita : tiene
-                Medico ||--o{ Cita : asignado
-        </pre>
+        <pre class="plantuml">@startuml MER - Modelo Entidad-Relación
+
+package "pacientes_schema" {
+    class Paciente {
+        +id: Long
+        +nombre: String
+        +apellido: String
+        +fechaNacimiento: Date
+        +telefono: String
+        +email: String
+    }
+
+    class HistorialMedico {
+        +id: Long
+        +pacienteId: Long
+        +descripcion: String
+        +fecha: Date
+    }
+
+    Paciente ||--o{ HistorialMedico : tiene
+}
+
+package "medicos_schema" {
+    class Medico {
+        +id: Long
+        +nombre: String
+        +apellido: String
+        +especialidadId: Long
+        +telefono: String
+        +email: String
+    }
+
+    class Turno {
+        +id: Long
+        +medicoId: Long
+        +fecha: Date
+        +horaInicio: Time
+        +horaFin: Time
+    }
+
+    Medico ||--o{ Turno : tiene
+}
+
+package "citas_schema" {
+    class Cita {
+        +id: Long
+        +pacienteId: Long
+        +medicoId: Long
+        +salaId: Long
+        +hospitalId: Long
+        +tipoCitaId: Long
+        +estadoId: Long
+        +fecha: Date
+        +hora: Time
+    }
+
+    class Sala {
+        +id: Long
+        +nombre: String
+        +hospitalId: Long
+    }
+
+    class Hospital {
+        +id: Long
+        +nombre: String
+        +direccion: String
+    }
+
+    Hospital ||--o{ Sala : contiene
+    Sala ||--o{ Cita : asignada
+}
+
+package "parametrizacion_schema" {
+    class Rol {
+        +id: Long
+        +nombre: String
+    }
+
+    class TipoCita {
+        +id: Long
+        +nombre: String
+        +descripcion: String
+    }
+
+    class EstadoCita {
+        +id: Long
+        +nombre: String
+    }
+
+    class Especialidad {
+        +id: Long
+        +nombre: String
+        +descripcion: String
+    }
+}
+
+package "seguridad_schema" {
+    class Usuario {
+        +id: Long
+        +nombreUsuario: String
+        +password: String
+        +rolId: Long
+        +activo: Boolean
+    }
+}
+
+' Relaciones entre esquemas
+Paciente ||--o| Usuario : tiene (opcional)
+Medico ||--o| Usuario : tiene (opcional)
+Usuario --> Rol : tiene
+Cita --> TipoCita : es de tipo
+Cita --> EstadoCita : tiene estado
+Medico --> Especialidad : pertenece
+
+@enduml</pre>
+    </div>
+
+    <h2>Diagrama de Clases UML</h2>
+    <div class="diagram">
+        <pre class="plantuml">@startuml Diagrama de Clases UML
+
+class Paciente {
+    +id: Long
+}
+
+class Medico {
+    +id: Long
+}
+
+class Cita {
+    +id: Long
+}
+
+class Sala {
+    +id: Long
+}
+
+class Hospital {
+    +id: Long
+}
+
+class HistorialMedico {
+    +id: Long
+}
+
+class Turno {
+    +id: Long
+}
+
+class Usuario {
+    +id: Long
+}
+
+class Rol {
+    +id: Long
+}
+
+class TipoCita {
+    +id: Long
+}
+
+class EstadoCita {
+    +id: Long
+}
+
+class Especialidad {
+    +id: Long
+}
+
+' Relaciones de composición
+Hospital *-- Sala
+Sala *-- Cita
+Paciente *-- HistorialMedico
+Medico *-- Turno
+
+' Relaciones de asociación
+Paciente o-- Usuario
+Medico o-- Usuario
+Usuario --> Rol
+Cita --> TipoCita
+Cita --> EstadoCita
+Medico --> Especialidad
+Cita --> Paciente
+Cita --> Medico
+Cita --> Sala
+Sala --> Hospital
+HistorialMedico --> Paciente
+Turno --> Medico
+
+@enduml</pre>
     </div>
 
     <h2>Diagrama de Secuencia</h2>
     <div class="diagram">
-        <pre class="mermaid">
-            sequenceDiagram
-                participant P as Paciente
-                participant S as Sistema
-                participant M as Médico
-                P->>S: Solicitar agendar cita
-                S->>P: Mostrar médicos disponibles
-                P->>S: Seleccionar médico y fecha
-                S->>M: Verificar disponibilidad
-                M->>S: Confirmar disponibilidad
-                S->>P: Cita agendada exitosamente
-                S->>M: Notificar nueva cita
-        </pre>
+        <pre class="plantuml">@startuml Diagrama de Secuencia - Agendar Cita
+
+actor Paciente as P
+participant "Sistema" as S
+participant "Médico" as M
+
+P -> S: Solicitar agendar cita
+S -> P: Mostrar médicos disponibles
+P -> S: Seleccionar médico y fecha
+S -> M: Verificar disponibilidad
+M -> S: Confirmar disponibilidad
+S -> P: Cita agendada exitosamente
+S -> M: Notificar nueva cita
+
+@enduml</pre>
     </div>
 
     <h2>Diagrama de Paquetes</h2>
     <div class="diagram">
-        <pre class="mermaid">
-            graph TD
-                A[Módulo Pacientes] --> B[Gestión de Pacientes]
-                A --> C[Historial Médico]
-                D[Módulo Médicos] --> E[Gestión de Médicos]
-                D --> F[Especialidades y Turnos]
-                G[Módulo Citas] --> H[Gestión de Citas]
-                G --> I[Asignación de Hospitales y Salas]
-                J[Backend API] --> A
-                J --> D
-                J --> G
-                K[Base de Datos] --> J
-        </pre>
+        <pre class="plantuml">@startuml Diagrama de Paquetes
+
+package "Módulo Pacientes" as P {
+    [PacienteController]
+    [PacienteService]
+    [PacienteRepository]
+    [Paciente]
+    [HistorialMedico]
+    note right : pacientes_schema
+}
+
+package "Módulo Médicos" as M {
+    [MedicoController]
+    [MedicoService]
+    [MedicoRepository]
+    [Medico]
+    [Turno]
+    note right : medicos_schema
+}
+
+package "Módulo Citas" as C {
+    [CitaController]
+    [CitaService]
+    [CitaRepository]
+    [Cita]
+    [Sala]
+    [Hospital]
+    note right : citas_schema
+}
+
+package "Módulo Parametrización" as Param {
+    [ParametrizacionController]
+    [ParametrizacionService]
+    [ParametrizacionRepository]
+    [Rol]
+    [TipoCita]
+    [EstadoCita]
+    [Especialidad]
+    note right : parametrizacion_schema
+}
+
+package "Módulo Seguridad" as S {
+    [SeguridadController]
+    [SeguridadService]
+    [SeguridadRepository]
+    [Usuario]
+    note right : seguridad_schema
+}
+
+package "Spring Boot Application" as App {
+    [HospitalApplication]
+    [Config Classes]
+}
+
+package "PostgreSQL Database" as DB
+
+App --> P
+App --> M
+App --> C
+App --> Param
+App --> S
+
+DB --> P : pacientes_schema
+DB --> M : medicos_schema
+DB --> C : citas_schema
+DB --> Param : parametrizacion_schema
+DB --> S : seguridad_schema
+
+@enduml</pre>
     </div>
 </body>
 </html>

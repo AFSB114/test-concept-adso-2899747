@@ -1,0 +1,50 @@
+# Diagrama de Casos de Uso
+
+**Archivo PlantUML:** `casos-de-uso.wsd`
+
+```plantuml
+@startuml Casos de Uso
+
+left to right direction
+
+actor "Paciente" as P
+actor "Médico" as M
+actor "Administrador" as A
+
+package "Funcionalidades de Paciente" {
+    usecase "Agendar Cita" as UC1
+    usecase "Ver Historial Médico" as UC2
+    usecase "Iniciar Sesión" as UC3
+}
+
+package "Funcionalidades de Médico" {
+    usecase "Ver Citas Asignadas" as UC4
+    usecase "Actualizar Historial Médico" as UC5
+    usecase "Iniciar Sesión" as UC6
+}
+
+package "Funcionalidades de Administrador" {
+    usecase "Gestionar Pacientes" as UC7
+    usecase "Gestionar Médicos" as UC8
+    usecase "Gestionar Citas" as UC9
+    usecase "Gestionar Hospitales y Salas" as UC10
+    usecase "Parametrizar Tipos y Estados" as UC11
+    usecase "Gestionar Usuarios y Roles" as UC12
+}
+
+P --> UC1
+P --> UC2
+P --> UC3
+
+M --> UC4
+M --> UC5
+M --> UC6
+
+A --> UC7
+A --> UC8
+A --> UC9
+A --> UC10
+A --> UC11
+A --> UC12
+
+@enduml

@@ -1,0 +1,71 @@
+@startuml Diagrama de Clases UML
+
+class Paciente {
+    +id: Long
+}
+
+class Medico {
+    +id: Long
+}
+
+class Cita {
+    +id: Long
+}
+
+class Sala {
+    +id: Long
+}
+
+class Hospital {
+    +id: Long
+}
+
+class HistorialMedico {
+    +id: Long
+}
+
+class Turno {
+    +id: Long
+}
+
+class Usuario {
+    +id: Long
+}
+
+class Rol {
+    +id: Long
+}
+
+class TipoCita {
+    +id: Long
+}
+
+class EstadoCita {
+    +id: Long
+}
+
+class Especialidad {
+    +id: Long
+}
+
+' Relaciones de composición
+Hospital *-- Sala
+Sala *-- Cita
+Paciente *-- HistorialMedico
+Medico *-- Turno
+
+' Relaciones de asociación
+Paciente o-- Usuario
+Medico o-- Usuario
+Usuario --> Rol
+Cita --> TipoCita
+Cita --> EstadoCita
+Medico --> Especialidad
+Cita --> Paciente
+Cita --> Medico
+Cita --> Sala
+Sala --> Hospital
+HistorialMedico --> Paciente
+Turno --> Medico
+
+@enduml
