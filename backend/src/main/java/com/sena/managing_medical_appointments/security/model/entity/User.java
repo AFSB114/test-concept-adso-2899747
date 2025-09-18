@@ -1,8 +1,6 @@
 package com.sena.managing_medical_appointments.security.model.entity;
 
-import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
 import com.sena.managing_medical_appointments.parameterization.model.entity.Role;
-import com.sena.managing_medical_appointments.patients.model.entity.Patient;
 import com.sena.managing_medical_appointments.shared.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -27,16 +25,6 @@ public class User extends BaseEntity {
     @JoinColumn(name = "role_id", nullable = false)
     @Schema(description = "User's role")
     private Role role;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id")
-    @Schema(description = "Associated patient (if applicable)")
-    private Patient patient;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    @Schema(description = "Associated doctor (if applicable)")
-    private Doctor doctor;
 
     @Column(name = "active", nullable = false)
     @Schema(description = "Whether the user is active", example = "true")
