@@ -6,93 +6,93 @@
 @startuml Entity-Relationship Model (MER)
 
 package "patients_schema" {
-    class Patient {
+    class patient {
         +id: Long
         +name: String
-        +lastName: String
-        +birthDate: Date
+        +last_name: String
+        +birth_date: Date
         +phone: String
         +email: String
     }
 
-    class MedicalHistory {
+    class medical_history {
         +id: Long
-        +patientId: Long
+        +patient_id: Long
         +description: String
         +date: Date
     }
 
-    Patient ||--o{ MedicalHistory : has
+    patient ||--o{ medical_history : has
 }
 
 package "doctors_schema" {
-    class Doctor {
+    class doctor {
         +id: Long
         +name: String
-        +lastName: String
-        +specialtyId: Long
+        +last_name: String
+        +specialty_id: Long
         +phone: String
         +email: String
     }
 
-    class Shift {
+    class shift {
         +id: Long
-        +doctorId: Long
+        +doctor_id: Long
         +date: Date
-        +startTime: Time
-        +endTime: Time
+        +start_time: Time
+        +end_time: Time
     }
 
-    Doctor ||--o{ Shift : has
+    doctor ||--o{ shift : has
 }
 
 package "appointments_schema" {
-    class Appointment {
+    class appointment {
         +id: Long
-        +patientId: Long
-        +doctorId: Long
-        +roomId: Long
-        +hospitalId: Long
-        +appointmentTypeId: Long
-        +statusId: Long
+        +patient_id: Long
+        +doctor_id: Long
+        +room_id: Long
+        +hospital_id: Long
+        +appointment_type_id: Long
+        +status_id: Long
         +date: Date
         +time: Time
     }
 
-    class Room {
+    class room {
         +id: Long
         +name: String
-        +hospitalId: Long
+        +hospital_id: Long
     }
 
-    class Hospital {
+    class hospital {
         +id: Long
         +name: String
         +address: String
     }
 
-    Hospital ||--o{ Room : contains
-    Room ||--o{ Appointment : assigned
+    hospital ||--o{ room : contains
+    room ||--o{ appointment : assigned
 }
 
 package "parameterization_schema" {
-    class Role {
+    class role {
         +id: Long
         +name: String
     }
 
-    class AppointmentType {
+    class appointment_type {
         +id: Long
         +name: String
         +description: String
     }
 
-    class AppointmentStatus {
+    class appointment_status {
         +id: Long
         +name: String
     }
 
-    class Specialty {
+    class specialty {
         +id: Long
         +name: String
         +description: String
@@ -100,21 +100,21 @@ package "parameterization_schema" {
 }
 
 package "security_schema" {
-    class User {
+    class user {
         +id: Long
         +username: String
         +password: String
-        +roleId: Long
+        +role_id: Long
         +active: Boolean
     }
 }
 
 ' Relationships between schemas
-Patient ||--o| User : has (optional)
-Doctor ||--o| User : has (optional)
-User --> Role : has
-Appointment --> AppointmentType : is of type
-Appointment --> AppointmentStatus : has status
-Doctor --> Specialty : belongs to
+patient ||--o| user : has (optional)
+doctor ||--o| user : has (optional)
+user --> role : has
+appointment --> appointment_type : is of type
+appointment --> appointment_status : has status
+doctor --> specialty : belongs to
 
 @enduml
