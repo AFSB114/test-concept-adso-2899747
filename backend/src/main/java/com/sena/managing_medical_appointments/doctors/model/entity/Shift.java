@@ -1,5 +1,6 @@
 package com.sena.managing_medical_appointments.doctors.entity;
 
+import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
 import com.sena.managing_medical_appointments.shared.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;

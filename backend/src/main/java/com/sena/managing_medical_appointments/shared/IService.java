@@ -1,56 +1,63 @@
 package com.sena.managing_medical_appointments.shared;
 
+import com.sena.managing_medical_appointments.shared.BaseEntity;
+
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Base service interface that provides common CRUD operations for all entities.
- * All entity services should implement this interface.
- *
- * @param <T> The entity type
- * @param <ID> The entity's primary key type
- * @param <REQ> The request DTO type
- * @param <RES> The response DTO type
- */
-public interface IService<T, ID, REQ, RES> {
+public interface IService<T extends BaseEntity, DReq, DRes> {
+    /**
+     * Retrieves all entities.
+     *
+     * @return A list of all entities.
+     * @throws Exception If an error occurs while retrieving the entities.
+     */
+    List<T> all() throws Exception;
 
     /**
-     * Find all active entities (not soft deleted)
-     * @return List of response DTOs
+     * Retrieves all entities with state set to true.
+     *
+     * @return A list of entities with state set to true.
+     * @throws Exception If an error occurs while retrieving the entities.
      */
-    List<RES> findAll();
+    List<T> findByStateTrue() throws Exception;
 
     /**
-     * Find entity by ID
-     * @param id The entity ID
-     * @return Response DTO or null if not found
+     * Retrieves an entity by its ID.
+     *
+     * @param id The ID of the entity to retrieve.
+     * @return An Optional containing the entity, or empty if not found.
+     * @throws Exception If an error occurs while retrieving the entity.
      */
-    RES findById(ID id);
+    Optional<T> findById(Long id) throws Exception;
 
     /**
-     * Create a new entity
-     * @param request The request DTO
-     * @return Created response DTO
+     * Saves an entity.
+     *
+     * @param entity The entity to save.
+     * @return The saved entity.
+     * @throws Exception If an error occurs while saving the entity.
      */
-    RES create(REQ request);
+    T save(T entity) throws Exception;
 
     /**
-     * Update an existing entity
-     * @param id The entity ID
-     * @param request The request DTO
-     * @return Updated response DTO
+     * Updates an existing entity by its ID.
+     *
+     * @param id     The ID of the entity to update.
+     * @param entity The updated entity.
+     * @throws Exception If an error occurs while updating the entity.
      */
-    RES update(ID id, REQ request);
+    void update(Long id, T entity) throws Exception;
 
     /**
-     * Soft delete an entity
-     * @param id The entity ID
+     * Deletes an entity by its ID.
+     *
+     * @param id The ID of the entity to delete.
+     * @throws Exception If an error occurs while deleting the entity.
      */
-    void delete(ID id);
+    void delete(Long id) throws Exception;
 
-    /**
-     * Check if entity exists and is active
-     * @param id The entity ID
-     * @return true if entity exists and is active
-     */
-    boolean existsById(ID id);
+    DRes mapToResDto(T entity);
+
+    T mapToEntity(DReq reqDto);
 }
