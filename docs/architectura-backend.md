@@ -85,6 +85,7 @@ Contains system master data and configurations.
 ### Security Module
 Manages user access credentials.
 - **user**: User authentication information
+- **Note**: Patients and doctors have a one-to-one relationship with users for authentication purposes
 
 ## REST API
 
@@ -155,7 +156,8 @@ CREATE TABLE patient (
     last_name VARCHAR(100) NOT NULL,
     birth_date DATE,
     phone VARCHAR(20),
-    email VARCHAR(150)
+    email VARCHAR(150),
+    user_id BIGINT REFERENCES security_schema.user(id)
 );
 
 CREATE TABLE medical_history (
@@ -174,7 +176,8 @@ CREATE TABLE doctor (
     last_name VARCHAR(100) NOT NULL,
     specialty_id BIGINT NOT NULL REFERENCES parameterization_schema.specialty(id),
     phone VARCHAR(20),
-    email VARCHAR(150)
+    email VARCHAR(150),
+    user_id BIGINT REFERENCES security_schema.user(id)
 );
 
 CREATE TABLE shift (
@@ -244,8 +247,6 @@ CREATE TABLE user (
     username VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role_id BIGINT NOT NULL REFERENCES parameterization_schema.role(id),
-    patient_id BIGINT REFERENCES patients_schema.patient(id),
-    doctor_id BIGINT REFERENCES doctors_schema.doctor(id),
     active BOOLEAN DEFAULT TRUE
 );
 ```
