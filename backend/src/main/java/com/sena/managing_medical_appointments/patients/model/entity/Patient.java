@@ -1,5 +1,6 @@
 package com.sena.managing_medical_appointments.patients.model.entity;
 
+import com.sena.managing_medical_appointments.security.model.entity.User;
 import com.sena.managing_medical_appointments.shared.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -33,4 +34,9 @@ public class Patient extends BaseEntity {
     @Column(name = "email", length = 150)
     @Schema(description = "Patient's email address", example = "john.doe@example.com")
     private String email;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @Schema(description = "Associated user for authentication")
+    private User user;
 }
