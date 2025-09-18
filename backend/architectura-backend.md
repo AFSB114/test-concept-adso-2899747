@@ -20,6 +20,53 @@ This document describes the backend architecture for the **Hospital Appointment 
 - **Maven**: Dependency management and build.
 - **Git**: Version control.
 
+## Swagger/OpenAPI Configuration
+
+The project uses SpringDoc OpenAPI for automatic API documentation.
+
+### Dependency
+
+Add to pom.xml:
+
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.2.0</version>
+</dependency>
+```
+
+### Configuration
+
+Create `SwaggerConfig.java` in the `config` package:
+
+```java
+package com.sena.managing_medical_appointments.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Hospital Appointment Management System API")
+                        .version("1.0")
+                        .description("API for managing hospital appointments, patients, doctors, and parameterization"));
+    }
+}
+```
+
+### Access
+
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- API Docs: http://localhost:8080/v3/api-docs
+
 ## General Architecture
 
 The system follows a modular architecture with clear responsibility separation. Each module handles a specific part of the business domain, maintaining organized and maintainable code.
