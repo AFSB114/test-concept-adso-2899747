@@ -1,115 +1,115 @@
-@startuml MER - Modelo Entidad-Relación
+@startuml Entity-Relationship Model (MER)
 
-package "pacientes_schema" {
-    class Paciente {
+package "patients_schema" {
+    class Patient {
         +id: Long
-        +nombre: String
-        +apellido: String
-        +fechaNacimiento: Date
-        +telefono: String
+        +name: String
+        +lastName: String
+        +birthDate: Date
+        +phone: String
         +email: String
     }
 
-    class HistorialMedico {
+    class MedicalHistory {
         +id: Long
-        +pacienteId: Long
-        +descripcion: String
-        +fecha: Date
+        +patientId: Long
+        +description: String
+        +date: Date
     }
 
-    Paciente ||--o{ HistorialMedico : tiene
+    Patient ||--o{ MedicalHistory : has
 }
 
-package "medicos_schema" {
-    class Medico {
+package "doctors_schema" {
+    class Doctor {
         +id: Long
-        +nombre: String
-        +apellido: String
-        +especialidadId: Long
-        +telefono: String
+        +name: String
+        +lastName: String
+        +specialtyId: Long
+        +phone: String
         +email: String
     }
 
-    class Turno {
+    class Shift {
         +id: Long
-        +medicoId: Long
-        +fecha: Date
-        +horaInicio: Time
-        +horaFin: Time
+        +doctorId: Long
+        +date: Date
+        +startTime: Time
+        +endTime: Time
     }
 
-    Medico ||--o{ Turno : tiene
+    Doctor ||--o{ Shift : has
 }
 
-package "citas_schema" {
-    class Cita {
+package "appointments_schema" {
+    class Appointment {
         +id: Long
-        +pacienteId: Long
-        +medicoId: Long
-        +salaId: Long
+        +patientId: Long
+        +doctorId: Long
+        +roomId: Long
         +hospitalId: Long
-        +tipoCitaId: Long
-        +estadoId: Long
-        +fecha: Date
-        +hora: Time
+        +appointmentTypeId: Long
+        +statusId: Long
+        +date: Date
+        +time: Time
     }
 
-    class Sala {
+    class Room {
         +id: Long
-        +nombre: String
+        +name: String
         +hospitalId: Long
     }
 
     class Hospital {
         +id: Long
-        +nombre: String
-        +direccion: String
+        +name: String
+        +address: String
     }
 
-    Hospital ||--o{ Sala : contiene
-    Sala ||--o{ Cita : asignada
+    Hospital ||--o{ Room : contains
+    Room ||--o{ Appointment : assigned
 }
 
-package "parametrizacion_schema" {
-    class Rol {
+package "parameterization_schema" {
+    class Role {
         +id: Long
-        +nombre: String
+        +name: String
     }
 
-    class TipoCita {
+    class AppointmentType {
         +id: Long
-        +nombre: String
-        +descripcion: String
+        +name: String
+        +description: String
     }
 
-    class EstadoCita {
+    class AppointmentStatus {
         +id: Long
-        +nombre: String
+        +name: String
     }
 
-    class Especialidad {
+    class Specialty {
         +id: Long
-        +nombre: String
-        +descripcion: String
+        +name: String
+        +description: String
     }
 }
 
-package "seguridad_schema" {
-    class Usuario {
+package "security_schema" {
+    class User {
         +id: Long
-        +nombreUsuario: String
+        +username: String
         +password: String
-        +rolId: Long
-        +activo: Boolean
+        +roleId: Long
+        +active: Boolean
     }
 }
 
-' Relaciones entre esquemas
-Paciente ||--o| Usuario : tiene (opcional)
-Medico ||--o| Usuario : tiene (opcional)
-Usuario --> Rol : tiene
-Cita --> TipoCita : es de tipo
-Cita --> EstadoCita : tiene estado
-Medico --> Especialidad : pertenece
+' Relationships between schemas
+Patient ||--o| User : has (optional)
+Doctor ||--o| User : has (optional)
+User --> Role : has
+Appointment --> AppointmentType : is of type
+Appointment --> AppointmentStatus : has status
+Doctor --> Specialty : belongs to
 
 @enduml

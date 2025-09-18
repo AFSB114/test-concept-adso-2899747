@@ -1,50 +1,50 @@
-@startuml Diagrama de Paquetes
+@startuml Package Diagram
 
-package "Módulo Pacientes" as P {
-    [PacienteController]
-    [PacienteService]
-    [PacienteRepository]
-    [Paciente]
-    [HistorialMedico]
-    note right : pacientes_schema
+package "Patients Module" as P {
+    [PatientController]
+    [PatientService]
+    [PatientRepository]
+    [Patient]
+    [MedicalHistory]
+    note right : patients_schema
 }
 
-package "Módulo Médicos" as M {
-    [MedicoController]
-    [MedicoService]
-    [MedicoRepository]
-    [Medico]
-    [Turno]
-    note right : medicos_schema
+package "Doctors Module" as M {
+    [DoctorController]
+    [DoctorService]
+    [DoctorRepository]
+    [Doctor]
+    [Shift]
+    note right : doctors_schema
 }
 
-package "Módulo Citas" as C {
-    [CitaController]
-    [CitaService]
-    [CitaRepository]
-    [Cita]
-    [Sala]
+package "Appointments Module" as C {
+    [AppointmentController]
+    [AppointmentService]
+    [AppointmentRepository]
+    [Appointment]
+    [Room]
     [Hospital]
-    note right : citas_schema
+    note right : appointments_schema
 }
 
-package "Módulo Parametrización" as Param {
-    [ParametrizacionController]
-    [ParametrizacionService]
-    [ParametrizacionRepository]
-    [Rol]
-    [TipoCita]
-    [EstadoCita]
-    [Especialidad]
-    note right : parametrizacion_schema
+package "Parameterization Module" as Param {
+    [ParameterizationController]
+    [ParameterizationService]
+    [ParameterizationRepository]
+    [Role]
+    [AppointmentType]
+    [AppointmentStatus]
+    [Specialty]
+    note right : parameterization_schema
 }
 
-package "Módulo Seguridad" as S {
-    [SeguridadController]
-    [SeguridadService]
-    [SeguridadRepository]
-    [Usuario]
-    note right : seguridad_schema
+package "Security Module" as S {
+    [SecurityController]
+    [SecurityService]
+    [SecurityRepository]
+    [User]
+    note right : security_schema
 }
 
 package "Spring Boot Application" as App {
@@ -60,10 +60,10 @@ App --> C
 App --> Param
 App --> S
 
-DB --> P : pacientes_schema
-DB --> M : medicos_schema
-DB --> C : citas_schema
-DB --> Param : parametrizacion_schema
-DB --> S : seguridad_schema
+DB --> P : patients_schema
+DB --> M : doctors_schema
+DB --> C : appointments_schema
+DB --> Param : parameterization_schema
+DB --> S : security_schema
 
 @enduml
