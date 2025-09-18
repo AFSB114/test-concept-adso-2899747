@@ -1,4 +1,4 @@
-package com.sena.managing_medical_appointments.doctors.entity;
+package com.sena.managing_medical_appointments.doctors.model.entity;
 
 import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
 import com.sena.managing_medical_appointments.shared.BaseEntity;
