@@ -3,375 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Citas Hospitalarias - Java/Spring Boot</title>
-    <script src="https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/dist/plantuml-encoder.min.js"></script>
-    <script>
-        function renderPlantUML() {
-            const diagrams = document.querySelectorAll('pre.plantuml');
-            diagrams.forEach(pre => {
-                const code = pre.textContent;
-                const encoded = plantumlEncoder.encode(code);
-                const img = document.createElement('img');
-                img.src = `http://www.plantuml.com/plantuml/img/${encoded}`;
-                img.alt = 'Diagrama PlantUML';
-                pre.parentNode.replaceChild(img, pre);
-            });
-        }
-        window.onload = renderPlantUML;
-    </script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1, h2 { color: #333; }
-        .diagram { margin: 20px 0; }
-        pre.plantuml { display: none; }
-    </style>
+    <title>Hospital Appointment Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-    <h1>Sistema de Gestión de Citas Hospitalarias</h1>
-    <p>Este proyecto es un sistema completo para gestionar citas en un hospital, desarrollado con Java y Spring Boot. Arquitectura orientada a microservicios en un monorepo, con módulos separados por responsabilidades y esquemas en PostgreSQL. Incluye 5 módulos principales con 12+ entidades y diagramas UML en PlantUML.</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">🏥 HAMS</a>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#modules">Modules</a></li>
+                <li><a href="#database">Database</a></li>
+                <li><a href="#diagrams">Diagrams</a></li>
+                <li><a href="#api">API</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <h2>Módulos del Sistema</h2>
-    <ul>
-        <li><strong>Pacientes</strong>: Gestión de pacientes y historial médico (esquema: pacientes_schema)</li>
-        <li><strong>Médicos</strong>: Gestión de médicos y turnos (esquema: medicos_schema)</li>
-        <li><strong>Citas</strong>: Gestión de citas, salas y hospitales (esquema: citas_schema)</li>
-        <li><strong>Parametrización</strong>: Roles, tipos de cita, estados y especialidades (esquema: parametrizacion_schema)</li>
-        <li><strong>Seguridad</strong>: Gestión de usuarios y autenticación (esquema: seguridad_schema)</li>
-    </ul>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <h1>Hospital Appointment Management System</h1>
+            <p>A comprehensive Java Spring Boot application for managing medical appointments with microservices architecture</p>
+            <div class="hero-buttons">
+                <a href="pages/architecture.html" class="btn btn-primary">Explore Architecture</a>
+                <a href="pages/modules.html" class="btn btn-secondary">View Modules</a>
+            </div>
+        </div>
+    </section>
 
-    <h2>Diagrama de Casos de Uso</h2>
-    <div class="diagram">
-        <pre class="plantuml">@startuml Casos de Uso
+    <!-- Architecture Overview -->
+    <section id="architecture" class="section">
+        <div class="container">
+            <h2>System Architecture</h2>
+            <p>Built with Java 17 and Spring Boot 3.x, following microservices principles in a monorepo structure</p>
 
-left to right direction
+            <div class="architecture-grid">
+                <div class="arch-component">
+                    <div class="card-icon">☕</div>
+                    <h3>Java 17 + Spring Boot</h3>
+                    <p>Modern Java development with Spring Boot framework for rapid application development</p>
+                </div>
+                <div class="arch-component">
+                    <div class="card-icon">🗄️</div>
+                    <h3>PostgreSQL Database</h3>
+                    <p>Relational database with schema separation for data isolation and organization</p>
+                </div>
+                <div class="arch-component">
+                    <div class="card-icon">🔧</div>
+                    <h3>Microservices Design</h3>
+                    <p>Modular architecture with clear separation of concerns and independent modules</p>
+                </div>
+                <div class="arch-component">
+                    <div class="card-icon">📊</div>
+                    <h3>RESTful API</h3>
+                    <p>Well-designed REST endpoints following industry standards and best practices</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-actor "Paciente" as P
-actor "Médico" as M
-actor "Administrador" as A
+    <!-- Modules Section -->
+    <section id="modules" class="section">
+        <div class="container">
+            <h2>System Modules</h2>
+            <p>Five independent modules handling different aspects of the hospital management system</p>
 
-package "Funcionalidades de Paciente" {
-    usecase "Agendar Cita" as UC1
-    usecase "Ver Historial Médico" as UC2
-    usecase "Iniciar Sesión" as UC3
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <h3>Patients Module</h3>
+                    <p>Manages patient information and medical history</p>
+                    <ul class="card-features">
+                        <li>Patient registration and profiles</li>
+                        <li>Medical history tracking</li>
+                        <li>Contact information management</li>
+                        <li>Schema: patients_schema</li>
+                    </ul>
+                    <a href="pages/modules.html#patients" class="btn btn-secondary">View Details</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">👨‍⚕️</div>
+                    <h3>Doctors Module</h3>
+                    <p>Handles medical professional information and schedules</p>
+                    <ul class="card-features">
+                        <li>Doctor profiles and specialties</li>
+                        <li>Work schedule management</li>
+                        <li>Professional information</li>
+                        <li>Schema: doctors_schema</li>
+                    </ul>
+                    <a href="pages/modules.html#doctors" class="btn btn-secondary">View Details</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📅</div>
+                    <h3>Appointments Module</h3>
+                    <p>Controls appointment scheduling and management</p>
+                    <ul class="card-features">
+                        <li>Appointment booking system</li>
+                        <li>Hospital and room management</li>
+                        <li>Schedule optimization</li>
+                        <li>Schema: appointments_schema</li>
+                    </ul>
+                    <a href="pages/modules.html#appointments" class="btn btn-secondary">View Details</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Parameterization Module</h3>
+                    <p>System configuration and master data</p>
+                    <ul class="card-features">
+                        <li>Appointment types management</li>
+                        <li>Status configuration</li>
+                        <li>Medical specialties setup</li>
+                        <li>Schema: parameterization_schema</li>
+                    </ul>
+                    <a href="pages/modules.html#parameterization" class="btn btn-secondary">View Details</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔐</div>
+                    <h3>Security Module</h3>
+                    <p>User authentication and authorization</p>
+                    <ul class="card-features">
+                        <li>User authentication</li>
+                        <li>Role-based access control</li>
+                        <li>Security policies</li>
+                        <li>Schema: security_schema</li>
+                    </ul>
+                    <a href="pages/modules.html#security" class="btn btn-secondary">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Database Section -->
+    <section id="database" class="section">
+        <div class="container">
+            <h2>Database Design</h2>
+            <p>PostgreSQL database with 5 schemas for complete data separation and organization</p>
+
+            <div class="database-schema">
+                <h3>Schema Architecture</h3>
+                <div class="schema-grid">
+                    <div class="schema-item">
+                        <h4>patients_schema</h4>
+                        <p>Patient management and medical records</p>
+                        <small>Tables: patient, medical_history</small>
+                    </div>
+                    <div class="schema-item">
+                        <h4>doctors_schema</h4>
+                        <p>Medical professionals and schedules</p>
+                        <small>Tables: doctor, shift</small>
+                    </div>
+                    <div class="schema-item">
+                        <h4>appointments_schema</h4>
+                        <p>Appointment scheduling system</p>
+                        <small>Tables: appointment, room, hospital</small>
+                    </div>
+                    <div class="schema-item">
+                        <h4>parameterization_schema</h4>
+                        <p>System configuration data</p>
+                        <small>Tables: role, appointment_type, appointment_status, specialty</small>
+                    </div>
+                    <div class="schema-item">
+                        <h4>security_schema</h4>
+                        <p>User authentication data</p>
+                        <small>Tables: user</small>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="pages/database.html" class="btn btn-primary">View Complete Database Design</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diagrams Section -->
+    <section id="diagrams" class="section">
+        <div class="container">
+            <h2>UML Diagrams</h2>
+            <p>Complete UML documentation with PlantUML diagrams</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3>Use Case Diagram</h3>
+                    <p>System actors and their interactions</p>
+                    <p>Shows patient, doctor, and administrator use cases</p>
+                    <a href="pages/diagrams.html#use-case" class="btn btn-secondary">View Diagram</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏗️</div>
+                    <h3>Class Diagram (MER)</h3>
+                    <p>Entity-Relationship Model with database schemas</p>
+                    <p>Complete data model with relationships</p>
+                    <a href="pages/diagrams.html#classes" class="btn btn-secondary">View Diagram</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔄</div>
+                    <h3>Sequence Diagram</h3>
+                    <p>Appointment booking process flow</p>
+                    <p>Step-by-step interaction between actors</p>
+                    <a href="pages/diagrams.html#sequence" class="btn btn-secondary">View Diagram</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <h3>Package Diagram</h3>
+                    <p>Module organization and dependencies</p>
+                    <p>Microservices architecture visualization</p>
+                    <a href="pages/diagrams.html#packages" class="btn btn-secondary">View Diagram</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Section -->
+    <section id="api" class="section">
+        <div class="container">
+            <h2>REST API Documentation</h2>
+            <p>Well-structured REST endpoints following RESTful principles</p>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>API Endpoints</h3>
+                    <div class="code-block">
+GET    /api/patients              # List patients
+GET    /api/patients/{id}         # Get patient by ID
+POST   /api/patients              # Create patient
+PUT    /api/patients/{id}         # Update patient
+DELETE /api/patients/{id}         # Delete patient
+GET    /api/patients/{id}/history # Get medical history
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Response Format</h3>
+                    <div class="code-block">
+{
+  "id": 1,
+  "name": "John",
+  "last_name": "Doe",
+  "birth_date": "1990-01-01",
+  "phone": "+1234567890",
+  "email": "john.doe@email.com"
 }
+                    </div>
+                </div>
+            </div>
 
-package "Funcionalidades de Médico" {
-    usecase "Ver Citas Asignadas" as UC4
-    usecase "Actualizar Historial Médico" as UC5
-    usecase "Iniciar Sesión" as UC6
-}
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="pages/api.html" class="btn btn-primary">View Complete API Documentation</a>
+            </div>
+        </div>
+    </section>
 
-package "Funcionalidades de Administrador" {
-    usecase "Gestionar Pacientes" as UC7
-    usecase "Gestionar Médicos" as UC8
-    usecase "Gestionar Citas" as UC9
-    usecase "Gestionar Hospitales y Salas" as UC10
-    usecase "Parametrizar Tipos y Estados" as UC11
-    usecase "Gestionar Usuarios y Roles" as UC12
-}
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Hospital Appointment Management System</h3>
+            <p>A comprehensive solution for hospital appointment management built with modern Java technologies</p>
+            <p>© 2024 - Built with Java 17, Spring Boot 3.x, and PostgreSQL</p>
+        </div>
+    </footer>
 
-P --> UC1
-P --> UC2
-P --> UC3
-
-M --> UC4
-M --> UC5
-M --> UC6
-
-A --> UC7
-A --> UC8
-A --> UC9
-A --> UC10
-A --> UC11
-A --> UC12
-
-@enduml</pre>
-    </div>
-
-    <h2>Diagrama de Clases (MER)</h2>
-    <div class="diagram">
-        <pre class="plantuml">@startuml MER - Modelo Entidad-Relación
-
-package "pacientes_schema" {
-    class Paciente {
-        +id: Long
-        +nombre: String
-        +apellido: String
-        +fechaNacimiento: Date
-        +telefono: String
-        +email: String
-    }
-
-    class HistorialMedico {
-        +id: Long
-        +pacienteId: Long
-        +descripcion: String
-        +fecha: Date
-    }
-
-    Paciente ||--o{ HistorialMedico : tiene
-}
-
-package "medicos_schema" {
-    class Medico {
-        +id: Long
-        +nombre: String
-        +apellido: String
-        +especialidadId: Long
-        +telefono: String
-        +email: String
-    }
-
-    class Turno {
-        +id: Long
-        +medicoId: Long
-        +fecha: Date
-        +horaInicio: Time
-        +horaFin: Time
-    }
-
-    Medico ||--o{ Turno : tiene
-}
-
-package "citas_schema" {
-    class Cita {
-        +id: Long
-        +pacienteId: Long
-        +medicoId: Long
-        +salaId: Long
-        +hospitalId: Long
-        +tipoCitaId: Long
-        +estadoId: Long
-        +fecha: Date
-        +hora: Time
-    }
-
-    class Sala {
-        +id: Long
-        +nombre: String
-        +hospitalId: Long
-    }
-
-    class Hospital {
-        +id: Long
-        +nombre: String
-        +direccion: String
-    }
-
-    Hospital ||--o{ Sala : contiene
-    Sala ||--o{ Cita : asignada
-}
-
-package "parametrizacion_schema" {
-    class Rol {
-        +id: Long
-        +nombre: String
-    }
-
-    class TipoCita {
-        +id: Long
-        +nombre: String
-        +descripcion: String
-    }
-
-    class EstadoCita {
-        +id: Long
-        +nombre: String
-    }
-
-    class Especialidad {
-        +id: Long
-        +nombre: String
-        +descripcion: String
-    }
-}
-
-package "seguridad_schema" {
-    class Usuario {
-        +id: Long
-        +nombreUsuario: String
-        +password: String
-        +rolId: Long
-        +activo: Boolean
-    }
-}
-
-' Relaciones entre esquemas
-Paciente ||--o| Usuario : tiene (opcional)
-Medico ||--o| Usuario : tiene (opcional)
-Usuario --> Rol : tiene
-Cita --> TipoCita : es de tipo
-Cita --> EstadoCita : tiene estado
-Medico --> Especialidad : pertenece
-
-@enduml</pre>
-    </div>
-
-    <h2>Diagrama de Clases UML</h2>
-    <div class="diagram">
-        <pre class="plantuml">@startuml Diagrama de Clases UML
-
-class Paciente {
-    +id: Long
-}
-
-class Medico {
-    +id: Long
-}
-
-class Cita {
-    +id: Long
-}
-
-class Sala {
-    +id: Long
-}
-
-class Hospital {
-    +id: Long
-}
-
-class HistorialMedico {
-    +id: Long
-}
-
-class Turno {
-    +id: Long
-}
-
-class Usuario {
-    +id: Long
-}
-
-class Rol {
-    +id: Long
-}
-
-class TipoCita {
-    +id: Long
-}
-
-class EstadoCita {
-    +id: Long
-}
-
-class Especialidad {
-    +id: Long
-}
-
-' Relaciones de composición
-Hospital *-- Sala
-Sala *-- Cita
-Paciente *-- HistorialMedico
-Medico *-- Turno
-
-' Relaciones de asociación
-Paciente o-- Usuario
-Medico o-- Usuario
-Usuario --> Rol
-Cita --> TipoCita
-Cita --> EstadoCita
-Medico --> Especialidad
-Cita --> Paciente
-Cita --> Medico
-Cita --> Sala
-Sala --> Hospital
-HistorialMedico --> Paciente
-Turno --> Medico
-
-@enduml</pre>
-    </div>
-
-    <h2>Diagrama de Secuencia</h2>
-    <div class="diagram">
-        <pre class="plantuml">@startuml Diagrama de Secuencia - Agendar Cita
-
-actor Paciente as P
-participant "Sistema" as S
-participant "Médico" as M
-
-P -> S: Solicitar agendar cita
-S -> P: Mostrar médicos disponibles
-P -> S: Seleccionar médico y fecha
-S -> M: Verificar disponibilidad
-M -> S: Confirmar disponibilidad
-S -> P: Cita agendada exitosamente
-S -> M: Notificar nueva cita
-
-@enduml</pre>
-    </div>
-
-    <h2>Diagrama de Paquetes</h2>
-    <div class="diagram">
-        <pre class="plantuml">@startuml Diagrama de Paquetes
-
-package "Módulo Pacientes" as P {
-    [PacienteController]
-    [PacienteService]
-    [PacienteRepository]
-    [Paciente]
-    [HistorialMedico]
-    note right : pacientes_schema
-}
-
-package "Módulo Médicos" as M {
-    [MedicoController]
-    [MedicoService]
-    [MedicoRepository]
-    [Medico]
-    [Turno]
-    note right : medicos_schema
-}
-
-package "Módulo Citas" as C {
-    [CitaController]
-    [CitaService]
-    [CitaRepository]
-    [Cita]
-    [Sala]
-    [Hospital]
-    note right : citas_schema
-}
-
-package "Módulo Parametrización" as Param {
-    [ParametrizacionController]
-    [ParametrizacionService]
-    [ParametrizacionRepository]
-    [Rol]
-    [TipoCita]
-    [EstadoCita]
-    [Especialidad]
-    note right : parametrizacion_schema
-}
-
-package "Módulo Seguridad" as S {
-    [SeguridadController]
-    [SeguridadService]
-    [SeguridadRepository]
-    [Usuario]
-    note right : seguridad_schema
-}
-
-package "Spring Boot Application" as App {
-    [HospitalApplication]
-    [Config Classes]
-}
-
-package "PostgreSQL Database" as DB
-
-App --> P
-App --> M
-App --> C
-App --> Param
-App --> S
-
-DB --> P : pacientes_schema
-DB --> M : medicos_schema
-DB --> C : citas_schema
-DB --> Param : parametrizacion_schema
-DB --> S : seguridad_schema
-
-@enduml</pre>
-    </div>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

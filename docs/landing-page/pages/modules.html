@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modules - Hospital Appointment Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🏥 HAMS</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="#patients">Patients</a></li>
+                <li><a href="#doctors">Doctors</a></li>
+                <li><a href="#appointments">Appointments</a></li>
+                <li><a href="#parameterization">Parameterization</a></li>
+                <li><a href="#security">Security</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>System Modules</h1>
+            <p>Detailed breakdown of each module's functionality and implementation</p>
+        </div>
+    </section>
+
+    <!-- Patients Module -->
+    <section id="patients" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>👥 Patients Module</h3>
+                    <p><strong>Schema:</strong> patients_schema</p>
+                    <p><strong>Responsibility:</strong> Manage patient information and medical history</p>
+
+                    <h4>Entities:</h4>
+                    <ul>
+                        <li><strong>patient:</strong> Personal and contact information</li>
+                        <li><strong>medical_history:</strong> Patient medical records</li>
+                    </ul>
+
+                    <h4>API Endpoints:</h4>
+                    <div class="code-block">
+GET    /api/patients
+GET    /api/patients/{id}
+POST   /api/patients
+PUT    /api/patients/{id}
+DELETE /api/patients/{id}
+GET    /api/patients/{id}/history
+POST   /api/patients/{id}/history
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Database Schema</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Table</th>
+                                <th>Columns</th>
+                                <th>Relationships</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>patient</td>
+                                <td>id, name, last_name, birth_date, phone, email</td>
+                                <td>1:N with medical_history</td>
+                            </tr>
+                            <tr>
+                                <td>medical_history</td>
+                                <td>id, patient_id, description, date</td>
+                                <td>N:1 with patient</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctors Module -->
+    <section id="doctors" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>👨‍⚕️ Doctors Module</h3>
+                    <p><strong>Schema:</strong> doctors_schema</p>
+                    <p><strong>Responsibility:</strong> Handle medical professional information and schedules</p>
+
+                    <h4>Entities:</h4>
+                    <ul>
+                        <li><strong>doctor:</strong> Medical professional information</li>
+                        <li><strong>shift:</strong> Doctor work schedules</li>
+                    </ul>
+
+                    <h4>API Endpoints:</h4>
+                    <div class="code-block">
+GET    /api/doctors
+GET    /api/doctors/{id}
+POST   /api/doctors
+PUT    /api/doctors/{id}
+DELETE /api/doctors/{id}
+GET    /api/doctors/{id}/shifts
+POST   /api/doctors/{id}/shifts
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Database Schema</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Table</th>
+                                <th>Columns</th>
+                                <th>Relationships</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>doctor</td>
+                                <td>id, name, last_name, specialty_id, phone, email</td>
+                                <td>1:N with shift, N:1 with specialty</td>
+                            </tr>
+                            <tr>
+                                <td>shift</td>
+                                <td>id, doctor_id, date, start_time, end_time</td>
+                                <td>N:1 with doctor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointments Module -->
+    <section id="appointments" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>📅 Appointments Module</h3>
+                    <p><strong>Schema:</strong> appointments_schema</p>
+                    <p><strong>Responsibility:</strong> Control appointment scheduling and management</p>
+
+                    <h4>Entities:</h4>
+                    <ul>
+                        <li><strong>appointment:</strong> Scheduled appointment information</li>
+                        <li><strong>room:</strong> Hospital physical spaces</li>
+                        <li><strong>hospital:</strong> Medical center information</li>
+                    </ul>
+
+                    <h4>API Endpoints:</h4>
+                    <div class="code-block">
+GET    /api/appointments
+GET    /api/appointments/{id}
+POST   /api/appointments
+PUT    /api/appointments/{id}
+DELETE /api/appointments/{id}
+GET    /api/appointments/patient/{id}
+GET    /api/appointments/doctor/{id}
+GET    /api/rooms
+GET    /api/hospitals
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Database Schema</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Table</th>
+                                <th>Columns</th>
+                                <th>Relationships</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>appointment</td>
+                                <td>id, patient_id, doctor_id, room_id, appointment_type_id, status_id, date, time</td>
+                                <td>N:1 with patient, doctor, room, appointment_type, status</td>
+                            </tr>
+                            <tr>
+                                <td>room</td>
+                                <td>id, name, hospital_id</td>
+                                <td>N:1 with hospital, 1:N with appointment</td>
+                            </tr>
+                            <tr>
+                                <td>hospital</td>
+                                <td>id, name, address</td>
+                                <td>1:N with room</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parameterization Module -->
+    <section id="parameterization" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>⚙️ Parameterization Module</h3>
+                    <p><strong>Schema:</strong> parameterization_schema</p>
+                    <p><strong>Responsibility:</strong> System configuration and master data</p>
+
+                    <h4>Entities:</h4>
+                    <ul>
+                        <li><strong>role:</strong> User roles in the system</li>
+                        <li><strong>appointment_type:</strong> Available consultation types</li>
+                        <li><strong>appointment_status:</strong> Possible appointment statuses</li>
+                        <li><strong>specialty:</strong> Medical specialties</li>
+                    </ul>
+
+                    <h4>API Endpoints:</h4>
+                    <div class="code-block">
+GET    /api/roles
+GET    /api/appointment-types
+GET    /api/appointment-statuses
+GET    /api/specialties
+POST   /api/roles
+POST   /api/appointment-types
+POST   /api/appointment-statuses
+POST   /api/specialties
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Database Schema</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Table</th>
+                                <th>Columns</th>
+                                <th>Relationships</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>role</td>
+                                <td>id, name</td>
+                                <td>1:N with user</td>
+                            </tr>
+                            <tr>
+                                <td>appointment_type</td>
+                                <td>id, name, description</td>
+                                <td>1:N with appointment</td>
+                            </tr>
+                            <tr>
+                                <td>appointment_status</td>
+                                <td>id, name</td>
+                                <td>1:N with appointment</td>
+                            </tr>
+                            <tr>
+                                <td>specialty</td>
+                                <td>id, name, description</td>
+                                <td>1:N with doctor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Module -->
+    <section id="security" class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>🔐 Security Module</h3>
+                    <p><strong>Schema:</strong> security_schema</p>
+                    <p><strong>Responsibility:</strong> User authentication and authorization</p>
+
+                    <h4>Entities:</h4>
+                    <ul>
+                        <li><strong>user:</strong> User authentication information</li>
+                    </ul>
+
+                    <h4>API Endpoints:</h4>
+                    <div class="code-block">
+GET    /api/users
+GET    /api/users/{id}
+POST   /api/users
+PUT    /api/users/{id}
+DELETE /api/users/{id}
+POST   /api/auth/login
+POST   /api/auth/register
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Database Schema</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Table</th>
+                                <th>Columns</th>
+                                <th>Relationships</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>user</td>
+                                <td>id, username, password, role_id, patient_id, doctor_id, active</td>
+                                <td>N:1 with role, optional N:1 with patient/doctor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Security Features:</h4>
+                    <ul>
+                        <li>JWT token authentication</li>
+                        <li>Password encryption (BCrypt)</li>
+                        <li>Role-based authorization</li>
+                        <li>Session management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Hospital Appointment Management System</h3>
+            <p>Detailed module documentation</p>
+            <p>© 2024 - Modular architecture with 5 independent modules</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
