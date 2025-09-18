@@ -61,30 +61,30 @@ src/main/java/com/hospital/
 
 ### Patients Module
 Manages hospital patient information.
-- **Patient**: Personal data and contact information
-- **MedicalHistory**: Patient medical records
+- **patient**: Personal data and contact information
+- **medical_history**: Patient medical records
 
 ### Doctors Module
 Handles medical professional information.
-- **Doctor**: Medical professional information
-- **Shift**: Doctor work schedules
+- **doctor**: Medical professional information
+- **shift**: Doctor work schedules
 
 ### Appointments Module
 Controls medical appointment programming and management.
-- **Appointment**: Scheduled appointment information
-- **Room**: Hospital physical spaces
-- **Hospital**: Medical center information
+- **appointment**: Scheduled appointment information
+- **room**: Hospital physical spaces
+- **hospital**: Medical center information
 
 ### Parameterization Module
 Contains system master data and configurations.
-- **Role**: User roles in the system
-- **AppointmentType**: Available medical consultation types
-- **AppointmentStatus**: Possible appointment statuses
-- **Specialty**: Medical specialties
+- **role**: User roles in the system
+- **appointment_type**: Available medical consultation types
+- **appointment_status**: Possible appointment statuses
+- **specialty**: Medical specialties
 
 ### Security Module
 Manages user access credentials.
-- **User**: User authentication information
+- **user**: User authentication information
 
 ## REST API
 
@@ -149,7 +149,7 @@ Each module has its own schema in PostgreSQL to maintain data separation and fac
 
 #### patients_schema
 ```sql
-CREATE TABLE patients (
+CREATE TABLE patient (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE patients (
 
 CREATE TABLE medical_history (
     id BIGSERIAL PRIMARY KEY,
-    patient_id BIGINT NOT NULL REFERENCES patients(id),
+    patient_id BIGINT NOT NULL REFERENCES patient(id),
     description TEXT NOT NULL,
     date TIMESTAMP NOT NULL
 );
@@ -168,18 +168,18 @@ CREATE TABLE medical_history (
 
 #### doctors_schema
 ```sql
-CREATE TABLE doctors (
+CREATE TABLE doctor (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    specialty_id BIGINT NOT NULL,
+    specialty_id BIGINT NOT NULL REFERENCES parameterization_schema.specialty(id),
     phone VARCHAR(20),
     email VARCHAR(150)
 );
 
-CREATE TABLE shifts (
+CREATE TABLE shift (
     id BIGSERIAL PRIMARY KEY,
-    doctor_id BIGINT NOT NULL REFERENCES doctors(id),
+    doctor_id BIGINT NOT NULL REFERENCES doctor(id),
     date DATE NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL
@@ -188,25 +188,25 @@ CREATE TABLE shifts (
 
 #### appointments_schema
 ```sql
-CREATE TABLE hospitals (
+CREATE TABLE hospital (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     address TEXT
 );
 
-CREATE TABLE rooms (
+CREATE TABLE room (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    hospital_id BIGINT NOT NULL REFERENCES hospitals(id)
+    hospital_id BIGINT NOT NULL REFERENCES hospital(id)
 );
 
-CREATE TABLE appointments (
+CREATE TABLE appointment (
     id BIGSERIAL PRIMARY KEY,
-    patient_id BIGINT NOT NULL,
-    doctor_id BIGINT NOT NULL,
-    room_id BIGINT REFERENCES rooms(id),
-    appointment_type_id BIGINT NOT NULL,
-    status_id BIGINT NOT NULL,
+    patient_id BIGINT NOT NULL REFERENCES patients_schema.patient(id),
+    doctor_id BIGINT NOT NULL REFERENCES doctors_schema.doctor(id),
+    room_id BIGINT REFERENCES room(id),
+    appointment_type_id BIGINT NOT NULL REFERENCES parameterization_schema.appointment_type(id),
+    status_id BIGINT NOT NULL REFERENCES parameterization_schema.appointment_status(id),
     date DATE NOT NULL,
     time TIME NOT NULL
 );
@@ -214,37 +214,39 @@ CREATE TABLE appointments (
 
 #### parameterization_schema
 ```sql
-CREATE TABLE roles (
+CREATE TABLE role (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE appointment_types (
+CREATE TABLE appointment_type (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT
 );
 
-CREATE TABLE appointment_statuses (
+CREATE TABLE appointment_status (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE specialties (
+CREATE TABLE specialty (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    description TEXT
 );
 ```
 
 #### security_schema
 ```sql
-CREATE TABLE users (
+CREATE TABLE user (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role_id BIGINT NOT NULL,
-    patient_id BIGINT,
-    doctor_id BIGINT
+    role_id BIGINT NOT NULL REFERENCES parameterization_schema.role(id),
+    patient_id BIGINT REFERENCES patients_schema.patient(id),
+    doctor_id BIGINT REFERENCES doctors_schema.doctor(id),
+    active BOOLEAN DEFAULT TRUE
 );
 ```
 
