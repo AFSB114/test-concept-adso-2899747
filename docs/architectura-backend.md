@@ -205,7 +205,6 @@ CREATE TABLE appointments (
     patient_id BIGINT NOT NULL,
     doctor_id BIGINT NOT NULL,
     room_id BIGINT REFERENCES rooms(id),
-    hospital_id BIGINT REFERENCES hospitals(id),
     appointment_type_id BIGINT NOT NULL,
     status_id BIGINT NOT NULL,
     date DATE NOT NULL,
