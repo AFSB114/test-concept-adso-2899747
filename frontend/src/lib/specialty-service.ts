@@ -10,12 +10,20 @@ export class SpecialtyService {
     return apiClient.get<ApiResponse<Specialty>>(`/specialties/${id}`)
   }
 
-  async createSpecialty(specialty: Omit<Specialty, "id">): Promise<ApiResponse<Specialty>> {
-    return apiClient.post<ApiResponse<Specialty>>("/specialties", specialty)
+  async createSpecialty(specialty: Omit<Specialty, "id" | "isActive" | "createdAt" | "updatedAt">): Promise<ApiResponse<Specialty>> {
+    const requestData = {
+      name: specialty.name,
+      description: specialty.description
+    }
+    return apiClient.post<ApiResponse<Specialty>>("/specialties", requestData)
   }
 
   async updateSpecialty(id: string, specialty: Partial<Specialty>): Promise<ApiResponse<Specialty>> {
-    return apiClient.put<ApiResponse<Specialty>>(`/specialties/${id}`, specialty)
+    const requestData = {
+      name: specialty.name,
+      description: specialty.description
+    }
+    return apiClient.put<ApiResponse<Specialty>>(`/specialties/${id}`, requestData)
   }
 
   async deleteSpecialty(id: string): Promise<ApiResponse<void>> {

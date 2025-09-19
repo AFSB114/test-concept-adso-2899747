@@ -16,13 +16,31 @@ export class AppointmentService {
   }
 
   async createAppointment(
-    appointment: Omit<Appointment, "id" | "createdAt" | "updatedAt">,
+    appointment: Omit<Appointment, "id" | "createdAt" | "updatedAt" | "isActive">,
   ): Promise<ApiResponse<Appointment>> {
-    return apiClient.post<ApiResponse<Appointment>>("/appointments", appointment)
+    const requestData = {
+      patientId: appointment.patientId,
+      doctorId: appointment.doctorId,
+      roomId: appointment.roomId,
+      appointmentTypeId: appointment.appointmentTypeId,
+      statusId: appointment.statusId,
+      date: appointment.date,
+      time: appointment.time
+    }
+    return apiClient.post<ApiResponse<Appointment>>("/appointments", requestData)
   }
 
   async updateAppointment(id: string, appointment: Partial<Appointment>): Promise<ApiResponse<Appointment>> {
-    return apiClient.put<ApiResponse<Appointment>>(`/appointments/${id}`, appointment)
+    const requestData = {
+      patientId: appointment.patientId,
+      doctorId: appointment.doctorId,
+      roomId: appointment.roomId,
+      appointmentTypeId: appointment.appointmentTypeId,
+      statusId: appointment.statusId,
+      date: appointment.date,
+      time: appointment.time
+    }
+    return apiClient.put<ApiResponse<Appointment>>(`/appointments/${id}`, requestData)
   }
 
   async deleteAppointment(id: string): Promise<ApiResponse<void>> {

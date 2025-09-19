@@ -15,12 +15,28 @@ export class DoctorService {
     return apiClient.get<ApiResponse<Doctor>>(`/doctors/${id}`)
   }
 
-  async createDoctor(doctor: Omit<Doctor, "id" | "createdAt" | "updatedAt">): Promise<ApiResponse<Doctor>> {
-    return apiClient.post<ApiResponse<Doctor>>("/doctors", doctor)
+  async createDoctor(doctor: Omit<Doctor, "id" | "createdAt" | "updatedAt" | "isActive">): Promise<ApiResponse<Doctor>> {
+    const requestData = {
+      name: doctor.name,
+      lastName: doctor.lastName,
+      specialtyId: doctor.specialtyId,
+      phone: doctor.phone,
+      email: doctor.email,
+      userId: doctor.userId
+    }
+    return apiClient.post<ApiResponse<Doctor>>("/doctors", requestData)
   }
 
   async updateDoctor(id: string, doctor: Partial<Doctor>): Promise<ApiResponse<Doctor>> {
-    return apiClient.put<ApiResponse<Doctor>>(`/doctors/${id}`, doctor)
+    const requestData = {
+      name: doctor.name,
+      lastName: doctor.lastName,
+      specialtyId: doctor.specialtyId,
+      phone: doctor.phone,
+      email: doctor.email,
+      userId: doctor.userId
+    }
+    return apiClient.put<ApiResponse<Doctor>>(`/doctors/${id}`, requestData)
   }
 
   async deleteDoctor(id: string): Promise<ApiResponse<void>> {

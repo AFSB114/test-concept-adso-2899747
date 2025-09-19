@@ -24,16 +24,12 @@ export interface Permission {
 
 export interface Patient {
   id: string
-  firstName: string
+  name: string
   lastName: string
   email: string
   phone: string
-  dateOfBirth: string
-  gender: "M" | "F" | "Otro"
-  address: string
-  emergencyContact: string
-  emergencyPhone: string
-  medicalHistory: MedicalHistory[]
+  birthDate: string
+  userId: number
   isActive: boolean
   createdAt: string
   updatedAt: string
@@ -52,14 +48,12 @@ export interface MedicalHistory {
 
 export interface Doctor {
   id: string
-  firstName: string
+  name: string
   lastName: string
   email: string
   phone: string
-  specialtyId: string
-  specialty: Specialty
-  licenseNumber: string
-  shifts: DoctorShift[]
+  specialtyId: number
+  userId: number
   isActive: boolean
   createdAt: string
   updatedAt: string
@@ -79,23 +73,20 @@ export interface Specialty {
   name: string
   description: string
   isActive: boolean
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Appointment {
   id: string
-  patientId: string
-  patient: Patient
-  doctorId: string
-  doctor: Doctor
-  appointmentTypeId: string
-  appointmentType: AppointmentType
-  statusId: string
-  status: AppointmentStatus
-  scheduledDate: string
-  scheduledTime: string
-  duration: number // minutos
-  notes: string
-  roomNumber?: string
+  patientId: number
+  doctorId: number
+  roomId?: number
+  appointmentTypeId: number
+  statusId: number
+  date: string
+  time: string
+  isActive: boolean
   createdAt: string
   updatedAt: string
 }
@@ -117,19 +108,23 @@ export interface AppointmentStatus {
 
 // Tipos para formularios y API
 export interface ApiResponse<T> {
-  data: T
   message: string
+  data: T
   success: boolean
 }
 
 export interface PaginatedResponse<T> {
+  message: string
   data: T[]
   pagination: {
     page: number
     size: number
-    total: number
+    totalElements: number
     totalPages: number
+    first: boolean
+    last: boolean
   }
+  success: boolean
 }
 
 export interface ApiError {
@@ -142,25 +137,20 @@ export interface ApiError {
 export interface PatientFilters {
   search?: string
   isActive?: boolean
-  gender?: string
-  ageRange?: {
-    min: number
-    max: number
-  }
 }
 
 export interface DoctorFilters {
   search?: string
-  specialtyId?: string
+  specialtyId?: number
   isActive?: boolean
 }
 
 export interface AppointmentFilters {
   search?: string
-  patientId?: string
-  doctorId?: string
-  statusId?: string
+  patientId?: number
+  doctorId?: number
+  statusId?: number
   dateFrom?: string
   dateTo?: string
-  appointmentTypeId?: string
+  appointmentTypeId?: number
 }

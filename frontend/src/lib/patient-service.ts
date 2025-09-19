@@ -15,12 +15,28 @@ export class PatientService {
     return apiClient.get<ApiResponse<Patient>>(`/patients/${id}`)
   }
 
-  async createPatient(patient: Omit<Patient, "id" | "createdAt" | "updatedAt">): Promise<ApiResponse<Patient>> {
-    return apiClient.post<ApiResponse<Patient>>("/patients", patient)
+  async createPatient(patient: Omit<Patient, "id" | "createdAt" | "updatedAt" | "isActive">): Promise<ApiResponse<Patient>> {
+    const requestData = {
+      name: patient.name,
+      lastName: patient.lastName,
+      birthDate: patient.birthDate,
+      phone: patient.phone,
+      email: patient.email,
+      userId: patient.userId
+    }
+    return apiClient.post<ApiResponse<Patient>>("/patients", requestData)
   }
 
   async updatePatient(id: string, patient: Partial<Patient>): Promise<ApiResponse<Patient>> {
-    return apiClient.put<ApiResponse<Patient>>(`/patients/${id}`, patient)
+    const requestData = {
+      name: patient.name,
+      lastName: patient.lastName,
+      birthDate: patient.birthDate,
+      phone: patient.phone,
+      email: patient.email,
+      userId: patient.userId
+    }
+    return apiClient.put<ApiResponse<Patient>>(`/patients/${id}`, requestData)
   }
 
   async deletePatient(id: string): Promise<ApiResponse<void>> {
