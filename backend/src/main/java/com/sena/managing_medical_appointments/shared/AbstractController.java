@@ -1,5 +1,8 @@
 package com.sena.managing_medical_appointments.shared;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,45 @@ public abstract class AbstractController<T extends BaseEntity, DReq, DRes, S ext
             return ResponseEntity.ok(new ApiResponseDto<List<DRes>>("Datos obtenidos", dtos, true));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponseDto<List<DRes>>(e.getMessage(), null, false));
+        }
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<PaginatedResponseDto<DRes>> findAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<T> entityPage = service.findAll(pageable);
+            List<DRes> dtos = entityPage.getContent().stream()
+                    .map(service::mapToResDto)
+                    .collect(Collectors.toList());
+
+            PaginatedResponseDto.PaginationInfo paginationInfo = new PaginatedResponseDto.PaginationInfo(
+                    entityPage.getNumber(),
+                    entityPage.getSize(),
+                    entityPage.getTotalElements(),
+                    entityPage.getTotalPages(),
+                    entityPage.isFirst(),
+                    entityPage.isLast()
+            );
+
+            PaginatedResponseDto<DRes> response = new PaginatedResponseDto<>(
+                    "Datos obtenidos",
+                    dtos,
+                    paginationInfo,
+                    true
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            PaginatedResponseDto<DRes> errorResponse = new PaginatedResponseDto<>(
+                    e.getMessage(),
+                    null,
+                    null,
+                    false
+            );
+            return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
 

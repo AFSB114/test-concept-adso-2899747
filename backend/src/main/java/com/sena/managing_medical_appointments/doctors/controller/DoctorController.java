@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/doctors")
+@RequestMapping("/api/doctors")
 public class DoctorController extends AbstractController<Doctor, DoctorRequestDTO, DoctorResponseDTO, IDoctorService> {
 
     public DoctorController(IDoctorService service) {

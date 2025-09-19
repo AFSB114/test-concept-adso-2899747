@@ -1,5 +1,7 @@
 package com.sena.managing_medical_appointments.shared;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -54,6 +56,11 @@ public abstract class AbstractService<T extends BaseEntity, DReq, DRes> implemen
                     entity.setDeletedAt(LocalDateTime.now());
                     getRepository().save(entity);
                 });
+    }
+
+    @Override
+    public Page<T> findAll(Pageable pageable) throws Exception {
+        return getRepository().findAll(pageable);
     }
 
     @Override

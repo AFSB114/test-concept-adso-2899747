@@ -1,6 +1,8 @@
 package com.sena.managing_medical_appointments.shared;
 
 import com.sena.managing_medical_appointments.shared.BaseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +58,15 @@ public interface IService<T extends BaseEntity, DReq, DRes> {
      * @throws Exception If an error occurs while deleting the entity.
      */
     void delete(Long id) throws Exception;
+
+    /**
+     * Retrieves all entities with pagination.
+     *
+     * @param pageable The pagination information.
+     * @return A page of entities.
+     * @throws Exception If an error occurs while retrieving the entities.
+     */
+    Page<T> findAll(Pageable pageable) throws Exception;
 
     DRes mapToResDto(T entity);
 

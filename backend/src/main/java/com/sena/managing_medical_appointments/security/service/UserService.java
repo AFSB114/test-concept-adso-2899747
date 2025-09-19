@@ -8,9 +8,11 @@ import com.sena.managing_medical_appointments.security.model.entity.User;
 import com.sena.managing_medical_appointments.security.repository.IUserRepository;
 import com.sena.managing_medical_appointments.shared.AbstractService;
 import com.sena.managing_medical_appointments.shared.IRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class UserService extends AbstractService<User, UserRequestDTO, UserResponseDTO> implements IUserService {
 
@@ -24,16 +26,19 @@ public class UserService extends AbstractService<User, UserRequestDTO, UserRespo
 
     @Override
     public UserResponseDTO mapToResDto(User entity) {
+        log.debug("Mapping User entity to UserResponseDTO: {}", entity.getId());
         UserResponseDTO response = new UserResponseDTO();
         response.setId(entity.getId());
         response.setUsername(entity.getUsername());
         response.setRoleId(entity.getRole().getId());
         response.setActive(entity.getActive());
+        log.debug("Successfully mapped User entity to UserResponseDTO");
         return response;
     }
 
     @Override
     public User mapToEntity(UserRequestDTO request) {
+        log.debug("Mapping UserRequestDTO to User entity: {}", request.getUsername());
         Role role = new Role();
         role.setId(request.getRoleId());
 
@@ -43,6 +48,7 @@ public class UserService extends AbstractService<User, UserRequestDTO, UserRespo
         entity.setRole(role);
         entity.setActive(request.getActive());
 
+        log.debug("Successfully mapped UserRequestDTO to User entity");
         return entity;
     }
 }
