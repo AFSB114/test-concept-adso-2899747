@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/appointments")
+@RequestMapping("/api/appointments")
 public class AppointmentController extends AbstractController<Appointment, AppointmentRequestDTO, AppointmentResponseDTO, IAppointmentService> {
 
     public AppointmentController(IAppointmentService service) {

@@ -8,11 +8,11 @@ export class PatientService {
       size,
       ...filters,
     }
-    return apiClient.get<PaginatedResponse<Patient>>("/patients/paginated", params)
+    return apiClient.get<PaginatedResponse<Patient>>("/api/patients/paginated", params)
   }
 
   async getPatient(id: string): Promise<ApiResponse<Patient>> {
-    return apiClient.get<ApiResponse<Patient>>(`/patients/${id}`)
+    return apiClient.get<ApiResponse<Patient>>(`/api/patients/${id}`)
   }
 
   async createPatient(patient: Omit<Patient, "id" | "createdAt" | "updatedAt" | "isActive">): Promise<ApiResponse<Patient>> {
@@ -24,7 +24,7 @@ export class PatientService {
       email: patient.email,
       userId: patient.userId
     }
-    return apiClient.post<ApiResponse<Patient>>("/patients", requestData)
+    return apiClient.post<ApiResponse<Patient>>("/api/patients", requestData)
   }
 
   async updatePatient(id: string, patient: Partial<Patient>): Promise<ApiResponse<Patient>> {
@@ -36,22 +36,22 @@ export class PatientService {
       email: patient.email,
       userId: patient.userId
     }
-    return apiClient.put<ApiResponse<Patient>>(`/patients/${id}`, requestData)
+    return apiClient.put<ApiResponse<Patient>>(`/api/patients/${id}`, requestData)
   }
 
   async deletePatient(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/patients/${id}`)
+    return apiClient.delete<ApiResponse<void>>(`/api/patients/${id}`)
   }
 
   async getPatientHistory(id: string): Promise<ApiResponse<MedicalHistory[]>> {
-    return apiClient.get<ApiResponse<MedicalHistory[]>>(`/patients/${id}/history`)
+    return apiClient.get<ApiResponse<MedicalHistory[]>>(`/api/patients/${id}/history`)
   }
 
   async addMedicalHistory(
     patientId: string,
     history: Omit<MedicalHistory, "id" | "patientId">,
   ): Promise<ApiResponse<MedicalHistory>> {
-    return apiClient.post<ApiResponse<MedicalHistory>>(`/patients/${patientId}/history`, history)
+    return apiClient.post<ApiResponse<MedicalHistory>>(`/api/patients/${patientId}/history`, history)
   }
 }
 

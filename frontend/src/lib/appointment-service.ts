@@ -8,52 +8,48 @@ export class AppointmentService {
       size,
       ...filters,
     }
-    return apiClient.get<PaginatedResponse<Appointment>>("/appointments/paginated", params)
+    return apiClient.get<PaginatedResponse<Appointment>>(
+      "/api/appointments/paginated",
+      params
+    );
   }
 
   async getAppointment(id: string): Promise<ApiResponse<Appointment>> {
-    return apiClient.get<ApiResponse<Appointment>>(`/appointments/${id}`)
+    return apiClient.get<ApiResponse<Appointment>>(`/api/appointments/${id}`);
   }
 
   async createAppointment(
-    appointment: Omit<Appointment, "id" | "createdAt" | "updatedAt" | "isActive">,
+    appointment: Omit<Appointment, "id" | "createdAt" | "updatedAt">,
   ): Promise<ApiResponse<Appointment>> {
-    const requestData = {
-      patientId: appointment.patientId,
-      doctorId: appointment.doctorId,
-      roomId: appointment.roomId,
-      appointmentTypeId: appointment.appointmentTypeId,
-      statusId: appointment.statusId,
-      date: appointment.date,
-      time: appointment.time
-    }
-    return apiClient.post<ApiResponse<Appointment>>("/appointments", requestData)
+    return apiClient.post<ApiResponse<Appointment>>(
+      "/api/appointments",
+      appointment
+    );
   }
 
   async updateAppointment(id: string, appointment: Partial<Appointment>): Promise<ApiResponse<Appointment>> {
-    const requestData = {
-      patientId: appointment.patientId,
-      doctorId: appointment.doctorId,
-      roomId: appointment.roomId,
-      appointmentTypeId: appointment.appointmentTypeId,
-      statusId: appointment.statusId,
-      date: appointment.date,
-      time: appointment.time
-    }
-    return apiClient.put<ApiResponse<Appointment>>(`/appointments/${id}`, requestData)
+    return apiClient.put<ApiResponse<Appointment>>(
+      `/api/appointments/${id}`,
+      appointment
+    );
   }
 
   async deleteAppointment(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/appointments/${id}`)
+    return apiClient.delete<ApiResponse<void>>(`/api/appointments/${id}`);
   }
 
   async getPatientAppointments(patientId: string): Promise<ApiResponse<Appointment[]>> {
-    return apiClient.get<ApiResponse<Appointment[]>>(`/appointments/patient/${patientId}`)
+    return apiClient.get<ApiResponse<Appointment[]>>(
+      `/api/appointments/patient/${patientId}`
+    );
   }
 
   async getDoctorAppointments(doctorId: string, date?: string): Promise<ApiResponse<Appointment[]>> {
     const params = date ? { date } : {}
-    return apiClient.get<ApiResponse<Appointment[]>>(`/appointments/doctor/${doctorId}`, params)
+    return apiClient.get<ApiResponse<Appointment[]>>(
+      `/api/appointments/doctor/${doctorId}`,
+      params
+    );
   }
 
 }

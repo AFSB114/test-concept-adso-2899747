@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/shifts")
+@RequestMapping("/api/shifts")
 public class ShiftController extends AbstractController<Shift, ShiftRequestDTO, ShiftResponseDTO, IShiftService> {
 
     public ShiftController(IShiftService service) {

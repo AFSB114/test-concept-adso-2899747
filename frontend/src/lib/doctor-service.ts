@@ -8,51 +8,37 @@ export class DoctorService {
       size,
       ...filters,
     }
-    return apiClient.get<PaginatedResponse<Doctor>>("/doctors/paginated", params)
+    return apiClient.get<PaginatedResponse<Doctor>>("/api/doctors/paginated", params)
   }
 
   async getDoctor(id: string): Promise<ApiResponse<Doctor>> {
-    return apiClient.get<ApiResponse<Doctor>>(`/doctors/${id}`)
+    return apiClient.get<ApiResponse<Doctor>>(`/api/doctors/${id}`)
   }
 
-  async createDoctor(doctor: Omit<Doctor, "id" | "createdAt" | "updatedAt" | "isActive">): Promise<ApiResponse<Doctor>> {
-    const requestData = {
-      name: doctor.name,
-      lastName: doctor.lastName,
-      specialtyId: doctor.specialtyId,
-      phone: doctor.phone,
-      email: doctor.email,
-      userId: doctor.userId
-    }
-    return apiClient.post<ApiResponse<Doctor>>("/doctors", requestData)
+  async createDoctor(doctor: Omit<Doctor, "id" | "createdAt" | "updatedAt">): Promise<ApiResponse<Doctor>> {
+    return apiClient.post<ApiResponse<Doctor>>("/api/doctors", doctor)
   }
 
   async updateDoctor(id: string, doctor: Partial<Doctor>): Promise<ApiResponse<Doctor>> {
-    const requestData = {
-      name: doctor.name,
-      lastName: doctor.lastName,
-      specialtyId: doctor.specialtyId,
-      phone: doctor.phone,
-      email: doctor.email,
-      userId: doctor.userId
-    }
-    return apiClient.put<ApiResponse<Doctor>>(`/doctors/${id}`, requestData)
+    return apiClient.put<ApiResponse<Doctor>>(`/api/doctors/${id}`, doctor)
   }
 
   async deleteDoctor(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/doctors/${id}`)
+    return apiClient.delete<ApiResponse<void>>(`/api/doctors/${id}`)
   }
 
   async getDoctorShifts(id: string): Promise<ApiResponse<DoctorShift[]>> {
-    return apiClient.get<ApiResponse<DoctorShift[]>>(`/doctors/${id}/shifts`)
+    return apiClient.get<ApiResponse<DoctorShift[]>>(`/api/doctors/${id}/shifts`)
   }
 
   async updateDoctorShifts(id: string, shifts: DoctorShift[]): Promise<ApiResponse<DoctorShift[]>> {
-    return apiClient.put<ApiResponse<DoctorShift[]>>(`/doctors/${id}/shifts`, { shifts })
+    return apiClient.put<ApiResponse<DoctorShift[]>>(`/api/doctors/${id}/shifts`, { shifts })
   }
 
   async getDoctorsBySpecialty(specialtyId: string): Promise<ApiResponse<Doctor[]>> {
-    return apiClient.get<ApiResponse<Doctor[]>>("/doctors", { specialtyId })
+    return apiClient.get<ApiResponse<Doctor[]>>("/api/doctors", {
+      specialtyId,
+    });
   }
 
 }
