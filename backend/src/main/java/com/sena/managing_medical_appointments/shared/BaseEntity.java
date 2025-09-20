@@ -50,4 +50,8 @@ public abstract class BaseEntity {
     @Column(name = "deleted_by")
     @Schema(description = "User who deleted the entity", example = "admin")
     private String deletedBy;
+
+    @Column(name = "isActive")
+    @Schema(description = "Indicates if the entity is active or not", example = "true")
+    private Boolean isActive = true;
 }

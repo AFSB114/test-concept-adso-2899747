@@ -19,7 +19,16 @@ export class AppointmentService {
   }
 
   async createAppointment(
-    appointment: Omit<Appointment, "id" | "createdAt" | "updatedAt">,
+    appointment: {
+      patientId: number;
+      doctorId: number;
+      appointmentTypeId: number;
+      statusId: number;
+      hospitalId?: number;
+      roomId?: number;
+      date: string;
+      time: string;
+    },
   ): Promise<ApiResponse<Appointment>> {
     return apiClient.post<ApiResponse<Appointment>>(
       "/api/appointments",
@@ -27,7 +36,16 @@ export class AppointmentService {
     );
   }
 
-  async updateAppointment(id: string, appointment: Partial<Appointment>): Promise<ApiResponse<Appointment>> {
+  async updateAppointment(id: string, appointment: {
+    patientId?: number;
+    doctorId?: number;
+    appointmentTypeId?: number;
+    statusId?: number;
+    hospitalId?: number;
+    roomId?: number;
+    date?: string;
+    time?: string;
+  }): Promise<ApiResponse<Appointment>> {
     return apiClient.put<ApiResponse<Appointment>>(
       `/api/appointments/${id}`,
       appointment

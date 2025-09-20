@@ -26,6 +26,6 @@ public class PatientResponseDTO extends BaseResponseDTO {
     @Schema(description = "Patient's email address", example = "john.doe@example.com")
     private String email;
 
-    @Schema(description = "User ID for authentication", example = "1")
-    private Long userId;
+//    @Schema(description = "User ID for authentication", example = "1")
+//    private Long userId;
 }

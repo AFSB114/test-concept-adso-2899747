@@ -5,5 +5,9 @@ import com.sena.managing_medical_appointments.doctors.model.dto.res.ShiftRespons
 import com.sena.managing_medical_appointments.doctors.model.entity.Shift;
 import com.sena.managing_medical_appointments.shared.IService;
 
+import java.util.List;
+
 public interface IShiftService extends IService<Shift,ShiftRequestDTO, ShiftResponseDTO> {
+
+    List<Shift> findByDoctorId(Long doctorId);
 }

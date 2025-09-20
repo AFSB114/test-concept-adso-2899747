@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar, Users, UserCheck, Settings, BarChart3, Menu, X, Home, Stethoscope } from "lucide-react"
+import { Calendar, Users, UserCheck, Settings, BarChart3, Menu, X, Home, Stethoscope, Building, MapPin } from "lucide-react"
 
 const navigation = [
   {
@@ -22,6 +22,16 @@ const navigation = [
     name: "Doctores",
     href: "/doctors",
     icon: Stethoscope,
+  },
+  {
+    name: "Hospitales",
+    href: "/hospitals",
+    icon: Building,
+  },
+  {
+    name: "Salas",
+    href: "/rooms",
+    icon: MapPin,
   },
   {
     name: "Citas",

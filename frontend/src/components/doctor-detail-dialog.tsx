@@ -37,7 +37,7 @@ export function DoctorDetailDialog({ doctor, open, onClose }: DoctorDetailDialog
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Stethoscope className="h-5 w-5" />
-            Dr. {doctor.firstName} {doctor.lastName}
+            Dr. {doctor.name} {doctor.lastName}
           </DialogTitle>
           <DialogDescription>Información detallada del doctor</DialogDescription>
         </DialogHeader>
@@ -56,7 +56,7 @@ export function DoctorDetailDialog({ doctor, open, onClose }: DoctorDetailDialog
                 <User className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Nombre:</span>
                 <span>
-                  {doctor.firstName} {doctor.lastName}
+                  {doctor.name} {doctor.lastName}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -73,11 +73,6 @@ export function DoctorDetailDialog({ doctor, open, onClose }: DoctorDetailDialog
                 <Stethoscope className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Especialidad:</span>
                 <Badge variant="outline">{doctor.specialty.name}</Badge>
-              </div>
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <span className="font-medium">Licencia:</span>
-                <span className="font-mono">{doctor.licenseNumber}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Estado:</span>

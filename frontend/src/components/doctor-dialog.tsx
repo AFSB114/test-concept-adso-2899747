@@ -32,34 +32,31 @@ export function DoctorDialog({ doctor, mode, open, onClose, specialties }: Docto
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [formData, setFormData] = useState({
-    firstName: "",
+    name: "",
     lastName: "",
     email: "",
     phone: "",
-    specialtyId: "",
-    licenseNumber: "",
+    specialty: { id: "", name: "" } as Specialty,
     isActive: true,
   })
 
   useEffect(() => {
     if (doctor && mode === "edit") {
       setFormData({
-        firstName: doctor.firstName,
+        name: doctor.name,
         lastName: doctor.lastName,
         email: doctor.email,
         phone: doctor.phone,
-        specialtyId: doctor.specialtyId,
-        licenseNumber: doctor.licenseNumber,
+        specialty: { id: doctor.specialty.id, name: doctor.specialty.name } as Specialty,
         isActive: doctor.isActive,
       })
     } else if (mode === "create") {
       setFormData({
-        firstName: "",
+        name: "",
         lastName: "",
         email: "",
         phone: "",
-        specialtyId: "",
-        licenseNumber: "",
+        specialty: { id: "", name: "" } as Specialty,
         isActive: true,
       })
     }
@@ -74,11 +71,13 @@ export function DoctorDialog({ doctor, mode, open, onClose, specialties }: Docto
       if (mode === "create") {
         await doctorService.createDoctor({
           ...formData,
-          specialty: specialties.find((s) => s.id === formData.specialtyId)!,
-          shifts: [],
+          specialtyId: formData.specialty.id
         })
       } else if (doctor) {
-        await doctorService.updateDoctor(doctor.id, formData)
+        await doctorService.updateDoctor(doctor.id.toString(), {
+          ...formData,
+          specialtyId: formData.specialty.id
+        })
       }
       onClose()
     } catch (err) {
@@ -88,8 +87,16 @@ export function DoctorDialog({ doctor, mode, open, onClose, specialties }: Docto
     }
   }
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData({ ...formData, [field]: value })
+  const handleInputChange = (field: string, value: string | boolean | Specialty) => {
+    if (field === "specialty") {
+      // Para specialty, necesitamos encontrar el objeto Specialty completo por ID
+      const selectedSpecialty = specialties.find((s) => s.id === Number(value))
+      if (selectedSpecialty) {
+        setFormData({ ...formData, [field]: selectedSpecialty })
+      }
+    } else {
+      setFormData({ ...formData, [field]: value })
+    }
   }
 
   return (
@@ -113,11 +120,11 @@ export function DoctorDialog({ doctor, mode, open, onClose, specialties }: Docto
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">Nombre *</Label>
+              <Label htmlFor="name">Nombre *</Label>
               <Input
-                id="firstName"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Ingresa el nombre"
                 required
                 disabled={loading}
@@ -166,42 +173,20 @@ export function DoctorDialog({ doctor, mode, open, onClose, specialties }: Docto
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="specialtyId">Especialidad *</Label>
-              <Select value={formData.specialtyId} onValueChange={(value) => handleInputChange("specialtyId", value)}>
+              <Label htmlFor="specialty">Especialidad *</Label>
+              <Select value={formData.specialty.id.toString()} onValueChange={(value) => handleInputChange("specialty", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona la especialidad" />
                 </SelectTrigger>
                 <SelectContent>
                   {specialties.map((specialty) => (
-                    <SelectItem key={specialty.id} value={specialty.id}>
+                    <SelectItem key={specialty.id} value={specialty.id.toString()}>
                       {specialty.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="licenseNumber">Número de Licencia *</Label>
-              <Input
-                id="licenseNumber"
-                value={formData.licenseNumber}
-                onChange={(e) => handleInputChange("licenseNumber", e.target.value)}
-                placeholder="COL12345"
-                required
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="isActive"
-              checked={formData.isActive}
-              onCheckedChange={(checked) => handleInputChange("isActive", checked)}
-              disabled={loading}
-            />
-            <Label htmlFor="isActive">Doctor activo</Label>
           </div>
 
           <DialogFooter>

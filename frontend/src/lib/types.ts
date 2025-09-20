@@ -1,109 +1,187 @@
 export interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  role: UserRole
+  id: number
+  username: string
+  password: string
+  role: Role
+  active: boolean
   isActive: boolean
   createdAt: string
   updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
+}
+
+export interface Role {
+  id: number
+  name: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 export interface UserRole {
-  id: string
+  id: number
   name: "admin" | "doctor" | "recepcionista" | "paciente"
   permissions: Permission[]
 }
 
 export interface Permission {
-  id: string
+  id: number
   name: string
   resource: string
   action: string
 }
 
 export interface Patient {
-  id: string
+  id: number
   name: string
   lastName: string
   email: string
   phone: string
   birthDate: string
-  userId: number
   isActive: boolean
   createdAt: string
   updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 export interface MedicalHistory {
-  id: string
-  patientId: string
+  id: number
+  patient: Patient
+  description: string
   date: string
-  diagnosis: string
-  treatment: string
-  notes: string
-  doctorId: string
-  doctor: Doctor
-}
-
-export interface Doctor {
-  id: string
-  name: string
-  lastName: string
-  email: string
-  phone: string
-  specialtyId: number
-  userId: number
   isActive: boolean
   createdAt: string
   updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
+}
+
+export interface Doctor {
+  id: number;
+  name: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  specialty: Specialty;
+  specialtyId: number;
+  licenseNumber?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  deletedBy?: string;
 }
 
 export interface DoctorShift {
-  id: string
-  doctorId: string
-  dayOfWeek: number // 0-6 (Domingo-Sábado)
-  startTime: string // HH:mm
-  endTime: string // HH:mm
+  id: number
+  doctor: Doctor
+  date: string
+  startTime: string
+  endTime: string
   isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 export interface Specialty {
-  id: string
+  id: number
   name: string
   description: string
   isActive: boolean
   createdAt: string
   updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
+}
+
+export interface Hospital {
+  id: number
+  name: string
+  address: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
+}
+
+export interface Room {
+  id: number
+  name: string
+  hospitalId: number
+  hospital: Hospital
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 export interface Appointment {
-  id: string
-  patientId: number
-  doctorId: number
-  roomId?: number
-  appointmentTypeId: number
-  statusId: number
+  id: number
+  patient: Patient
+  doctor: Doctor
+  room?: Room
+  appointmentType: AppointmentType
+  status: AppointmentStatus
   date: string
   time: string
   isActive: boolean
   createdAt: string
   updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 export interface AppointmentType {
-  id: string
+  id: number
   name: string
-  duration: number // minutos
-  color: string
+  description: string
   isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 export interface AppointmentStatus {
-  id: string
-  name: "programada" | "confirmada" | "en_curso" | "completada" | "cancelada" | "no_asistio"
-  color: string
+  id: number
+  name: string
   isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt?: string
+  createdBy?: string
+  updatedBy?: string
+  deletedBy?: string
 }
 
 // Tipos para formularios y API
@@ -154,3 +232,4 @@ export interface AppointmentFilters {
   dateTo?: string
   appointmentTypeId?: number
 }
+

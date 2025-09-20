@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Service implementation for Shift entity operations.
  * Extends AbstractService to inherit common CRUD operations.
@@ -50,5 +52,10 @@ public class ShiftService extends AbstractService<Shift, ShiftRequestDTO, ShiftR
         entity.setStartTime(request.getStartTime());
         entity.setEndTime(request.getEndTime());
         return entity;
+    }
+
+    @Override
+    public List<Shift> findByDoctorId(Long doctorId) {
+        return repository.findByDoctorId(doctorId);
     }
 }

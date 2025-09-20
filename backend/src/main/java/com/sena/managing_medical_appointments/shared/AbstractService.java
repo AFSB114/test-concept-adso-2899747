@@ -45,6 +45,7 @@ public abstract class AbstractService<T extends BaseEntity, DReq, DRes> implemen
     @Override
     @Transactional
     public void update(Long id, T entity) throws Exception {
+        entity.setId(id);
         getRepository().save(entity);
     }
 
@@ -54,6 +55,7 @@ public abstract class AbstractService<T extends BaseEntity, DReq, DRes> implemen
         getRepository().findById(id)
                 .ifPresent(entity -> {
                     entity.setDeletedAt(LocalDateTime.now());
+                    entity.setIsActive(false);
                     getRepository().save(entity);
                 });
     }

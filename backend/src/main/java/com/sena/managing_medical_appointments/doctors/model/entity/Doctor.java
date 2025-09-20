@@ -43,9 +43,4 @@ public class Doctor extends BaseEntity {
     @Email(message = "Email format is invalid")
     @Schema(description = "Doctor's email address", example = "jane.smith@example.com")
     private String email;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    @Schema(description = "Associated user for authentication")
-    private User user;
 }
