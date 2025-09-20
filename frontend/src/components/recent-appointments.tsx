@@ -11,7 +11,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { appointmentService } from "@/lib/appointment-service";
-import type { Appointment } from "@/lib/types";
+import { patientService } from "@/lib/patient-service";
+import { doctorService } from "@/lib/doctor-service";
+import type { Appointment, Patient, Doctor } from "@/lib/types";
 import {
   Calendar,
   Clock,
@@ -24,6 +26,8 @@ import { AppointmentDetailDialog } from "@/components/appointment-detail-dialog"
 
 export function RecentAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedAppointment, setSelectedAppointment] =
@@ -31,6 +35,7 @@ export function RecentAppointments() {
 
   useEffect(() => {
     loadRecentAppointments();
+    loadReferenceData();
   }, []);
 
   const loadRecentAppointments = async () => {
@@ -49,6 +54,19 @@ export function RecentAppointments() {
       setAppointments([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadReferenceData = async () => {
+    try {
+      const [patientsResponse, doctorsResponse] = await Promise.all([
+        patientService.getPatients(1, 100, { isActive: true }),
+        doctorService.getDoctors(1, 100, { isActive: true }),
+      ]);
+      setPatients(patientsResponse.data);
+      setDoctors(doctorsResponse.data);
+    } catch (err) {
+      console.error("Error loading reference data:", err);
     }
   };
 
@@ -73,6 +91,22 @@ export function RecentAppointments() {
 
   const formatTime = (timeString: string) => {
     return timeString.slice(0, 5);
+  };
+
+  const getPatientName = (patientId: number) => {
+    const patient = patients.find(p => p.id === patientId);
+    return patient ? `${patient.firstName} ${patient.lastName}` : "Paciente no encontrado";
+  };
+
+  const getDoctorName = (doctorId: number) => {
+    const doctor = doctors.find(d => d.id === doctorId);
+    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : "Doctor no encontrado";
+  };
+
+  const getStatusName = (statusId: number) => {
+    // For now, return a default status name since we don't have the status data loaded
+    // This should be improved by loading appointment statuses
+    return "programada";
   };
 
   if (loading) {
@@ -150,13 +184,11 @@ export function RecentAppointments() {
                 >
                   <div className="space-y-1">
                     <p className="text-sm font-medium">
-                      {/* {appointment.patient.name}{" "}
-                      {appointment.patient.lastName} */}
+                      {getPatientName(appointment.patientId)}
                     </p>
                     <p className="text-xs text-muted-foreground flex items-center gap-2">
                       <User className="h-3 w-3" />
-                      {/* Dr. {appointment.doctor.name}{" "}
-                      {appointment.doctor.lastName} */}
+                      {getDoctorName(appointment.doctorId)}
                       <Clock className="h-3 w-3 ml-2" />
                       {formatTime(appointment.time)}
                     </p>
@@ -165,12 +197,11 @@ export function RecentAppointments() {
                     <Badge
                       variant={
                         getStatusColor(
-                          appointment.status?.name || "programada"
-                        ) as any
+                          getStatusName(appointment.statusId)
+                        ) as "default" | "secondary" | "destructive" | "outline"
                       }
                     >
-                      {appointment.status?.name?.replace("_", " ") ||
-                        "Programada"}
+                      {getStatusName(appointment.statusId).replace("_", " ")}
                     </Badge>
                     <Button
                       variant="ghost"
