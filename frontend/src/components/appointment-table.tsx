@@ -8,14 +8,18 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { appointmentService } from "@/lib/appointment-service"
+import { patientService } from "@/lib/patient-service"
+import { doctorService } from "@/lib/doctor-service"
 import { appointmentConfigService } from "@/lib/appointment-config-service"
-import type { Appointment, AppointmentFilters, AppointmentType, AppointmentStatus } from "@/lib/types"
+import type { Appointment, AppointmentFilters, AppointmentType, AppointmentStatus, Patient, Doctor } from "@/lib/types"
 import { Search, Plus, Edit, Eye, Trash2, Calendar, CheckCircle, XCircle, Clock } from "lucide-react"
 import { AppointmentDialog } from "./appointment-dialog"
 import { AppointmentDetailDialog } from "./appointment-detail-dialog"
 
 export function AppointmentTable() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [patients, setPatients] = useState<Patient[]>([])
+  const [doctors, setDoctors] = useState<Doctor[]>([])
   const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>([])
   const [appointmentStatuses, setAppointmentStatuses] = useState<AppointmentStatus[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,6 +34,7 @@ export function AppointmentTable() {
   useEffect(() => {
     loadAppointments()
     loadAppointmentConfig()
+    loadReferenceData()
   }, [page, filters])
 
   const loadAppointments = async () => {
@@ -61,12 +66,25 @@ export function AppointmentTable() {
     }
   }
 
+  const loadReferenceData = async () => {
+    try {
+      const [patientsResponse, doctorsResponse] = await Promise.all([
+        patientService.getPatients(1, 100, { isActive: true }),
+        doctorService.getDoctors(1, 100, { isActive: true }),
+      ])
+      setPatients(patientsResponse.data)
+      setDoctors(doctorsResponse.data)
+    } catch (err) {
+      console.error("Error loading reference data:", err)
+    }
+  }
+
   const handleSearch = () => {
     setPage(1)
     setFilters({ ...filters, search: searchTerm })
   }
 
-  const handleFilterChange = (key: keyof AppointmentFilters, value: any) => {
+  const handleFilterChange = (key: keyof AppointmentFilters, value: string | number | undefined) => {
     setPage(1)
     setFilters({ ...filters, [key]: value })
   }
@@ -94,34 +112,35 @@ export function AppointmentTable() {
     }
   }
 
-  const handleConfirm = async (appointment: Appointment) => {
-    try {
-      await appointmentService.confirmAppointment(appointment.id)
-      loadAppointments()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al confirmar cita")
-    }
-  }
+  // TODO: Implement these methods in the backend service
+  // const handleConfirm = async (appointment: Appointment) => {
+  //   try {
+  //     await appointmentService.confirmAppointment(appointment.id)
+  //     loadAppointments()
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : "Error al confirmar cita")
+  //   }
+  // }
 
-  const handleCancel = async (appointment: Appointment) => {
-    const reason = prompt("Motivo de cancelación (opcional):")
-    try {
-      await appointmentService.cancelAppointment(appointment.id, reason || undefined)
-      loadAppointments()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al cancelar cita")
-    }
-  }
+  // const handleCancel = async (appointment: Appointment) => {
+  //   const reason = prompt("Motivo de cancelación (opcional):")
+  //   try {
+  //     await appointmentService.cancelAppointment(appointment.id, reason || undefined)
+  //     loadAppointments()
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : "Error al cancelar cita")
+  //   }
+  // }
 
-  const handleComplete = async (appointment: Appointment) => {
-    const notes = prompt("Notas de la consulta (opcional):")
-    try {
-      await appointmentService.completeAppointment(appointment.id, notes || undefined)
-      loadAppointments()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al completar cita")
-    }
-  }
+  // const handleComplete = async (appointment: Appointment) => {
+  //   const notes = prompt("Notas de la consulta (opcional):")
+  //   try {
+  //     await appointmentService.completeAppointment(appointment.id, notes || undefined)
+  //     loadAppointments()
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : "Error al completar cita")
+  //   }
+  // }
 
   const handleDialogClose = () => {
     setSelectedAppointment(null)
@@ -168,6 +187,16 @@ export function AppointmentTable() {
   const getTypeName = (typeId: number) => {
     const type = appointmentTypes.find((t) => t.id === typeId)
     return type?.name || "Sin tipo"
+  }
+
+  const getPatientName = (patientId: number) => {
+    const patient = patients.find(p => p.id === patientId)
+    return patient ? `${patient.firstName} ${patient.lastName}` : "Paciente no encontrado"
+  }
+
+  const getDoctorName = (doctorId: number) => {
+    const doctor = doctors.find(d => d.id === doctorId)
+    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : "Doctor no encontrado"
   }
 
   return (
@@ -291,20 +320,20 @@ export function AppointmentTable() {
                   appointments.map((appointment) => (
                     <TableRow key={appointment.id}>
                       <TableCell className="font-medium">
-                        {/* {appointment.patient.name} {appointment.patient.lastName} */}
+                        {getPatientName(appointment.patientId)}
                       </TableCell>
                       <TableCell>
-                        {/* Dr. {appointment.doctor.name} {appointment.doctor.lastName} */}
+                        {getDoctorName(appointment.doctorId)}
                       </TableCell>
                       <TableCell>{formatDate(appointment.date)}</TableCell>
                       <TableCell>{formatTime(appointment.time)}</TableCell>
                       <TableCell>
-                        {/* <Badge variant="outline">{getTypeName(appointment.appointmentType.id)}</Badge> */}
+                        <Badge variant="outline">{getTypeName(appointment.appointmentTypeId)}</Badge>
                       </TableCell>
                       <TableCell>
-                        {/* <Badge variant={getStatusColor(getStatusName(appointment.status.id)) as any}>
-                          {getStatusName(appointment.status.id).replace("_", " ")}
-                        </Badge> */}
+                        <Badge variant={getStatusColor(getStatusName(appointment.statusId)) as "default" | "secondary" | "destructive" | "outline"}>
+                          {getStatusName(appointment.statusId).replace("_", " ")}
+                        </Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
@@ -314,12 +343,12 @@ export function AppointmentTable() {
                           <Button variant="ghost" size="sm" onClick={() => handleEdit(appointment)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          {/* {getStatusName(appointment.status.id) === "programada" && (
+                          {/* {getStatusName(appointment.statusId) === "programada" && (
                             <Button variant="ghost" size="sm" onClick={() => handleConfirm(appointment)}>
                               <CheckCircle className="h-4 w-4" />
                             </Button>
                           )} */}
-                          {/* {["programada", "confirmada"].includes(getStatusName(appointment.status.id)) && (
+                          {/* {["programada", "confirmada"].includes(getStatusName(appointment.statusId)) && (
                             <>
                               <Button variant="ghost" size="sm" onClick={() => handleCancel(appointment)}>
                                 <XCircle className="h-4 w-4" />
