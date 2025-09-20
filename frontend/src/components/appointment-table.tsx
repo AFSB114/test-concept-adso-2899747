@@ -82,12 +82,12 @@ export function AppointmentTable() {
   }
 
   const handleDelete = async (appointment: Appointment) => {
-    if (!confirm(`¿Estás seguro de eliminar la cita del ${formatDate(appointment.scheduledDate)}?`)) {
+    if (!confirm(`¿Estás seguro de eliminar la cita del ${formatDate(appointment.date)}?`)) {
       return
     }
 
     try {
-      await appointmentService.deleteAppointment(appointment.id)
+      await appointmentService.deleteAppointment(appointment.id.toString())
       loadAppointments()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al eliminar cita")
@@ -160,12 +160,12 @@ export function AppointmentTable() {
     }
   }
 
-  const getStatusName = (statusId: string) => {
+  const getStatusName = (statusId: number) => {
     const status = appointmentStatuses.find((s) => s.id === statusId)
     return status?.name || "Desconocido"
   }
 
-  const getTypeName = (typeId: string) => {
+  const getTypeName = (typeId: number) => {
     const type = appointmentTypes.find((t) => t.id === typeId)
     return type?.name || "Sin tipo"
   }
@@ -214,7 +214,7 @@ export function AppointmentTable() {
                 <SelectContent>
                   <SelectItem value="all">Todos los estados</SelectItem>
                   {appointmentStatuses.map((status) => (
-                    <SelectItem key={status.id} value={status.id}>
+                    <SelectItem key={status.id} value={status.id.toString()}>
                       {status.name.replace("_", " ")}
                     </SelectItem>
                   ))}
@@ -230,7 +230,7 @@ export function AppointmentTable() {
                 <SelectContent>
                   <SelectItem value="all">Todos los tipos</SelectItem>
                   {appointmentTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
+                    <SelectItem key={type.id} value={type.id.toString()}>
                       {type.name}
                     </SelectItem>
                   ))}
@@ -291,20 +291,20 @@ export function AppointmentTable() {
                   appointments.map((appointment) => (
                     <TableRow key={appointment.id}>
                       <TableCell className="font-medium">
-                        {appointment.patient.firstName} {appointment.patient.lastName}
+                        {/* {appointment.patient.name} {appointment.patient.lastName} */}
                       </TableCell>
                       <TableCell>
-                        Dr. {appointment.doctor.firstName} {appointment.doctor.lastName}
+                        {/* Dr. {appointment.doctor.name} {appointment.doctor.lastName} */}
                       </TableCell>
-                      <TableCell>{formatDate(appointment.scheduledDate)}</TableCell>
-                      <TableCell>{formatTime(appointment.scheduledTime)}</TableCell>
+                      <TableCell>{formatDate(appointment.date)}</TableCell>
+                      <TableCell>{formatTime(appointment.time)}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">{getTypeName(appointment.appointmentTypeId)}</Badge>
+                        {/* <Badge variant="outline">{getTypeName(appointment.appointmentType.id)}</Badge> */}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusColor(getStatusName(appointment.statusId)) as any}>
-                          {getStatusName(appointment.statusId).replace("_", " ")}
-                        </Badge>
+                        {/* <Badge variant={getStatusColor(getStatusName(appointment.status.id)) as any}>
+                          {getStatusName(appointment.status.id).replace("_", " ")}
+                        </Badge> */}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
@@ -314,12 +314,12 @@ export function AppointmentTable() {
                           <Button variant="ghost" size="sm" onClick={() => handleEdit(appointment)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          {getStatusName(appointment.statusId) === "programada" && (
+                          {/* {getStatusName(appointment.status.id) === "programada" && (
                             <Button variant="ghost" size="sm" onClick={() => handleConfirm(appointment)}>
                               <CheckCircle className="h-4 w-4" />
                             </Button>
-                          )}
-                          {["programada", "confirmada"].includes(getStatusName(appointment.statusId)) && (
+                          )} */}
+                          {/* {["programada", "confirmada"].includes(getStatusName(appointment.status.id)) && (
                             <>
                               <Button variant="ghost" size="sm" onClick={() => handleCancel(appointment)}>
                                 <XCircle className="h-4 w-4" />
@@ -328,7 +328,7 @@ export function AppointmentTable() {
                                 <Clock className="h-4 w-4" />
                               </Button>
                             </>
-                          )}
+                          )} */}
                           <Button variant="ghost" size="sm" onClick={() => handleDelete(appointment)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>

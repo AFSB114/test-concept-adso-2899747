@@ -105,13 +105,13 @@ export function CalendarView() {
 
   const getAppointmentsForDate = (date: Date) => {
     const dateStr = date.toISOString().split("T")[0]
-    return appointments.filter((apt) => apt.scheduledDate.split("T")[0] === dateStr)
+    return appointments.filter((apt) => apt.date.split("T")[0] === dateStr)
   }
 
   const getAppointmentsForTimeSlot = (date: Date, hour: number) => {
     const dateAppointments = getAppointmentsForDate(date)
     return dateAppointments.filter((apt) => {
-      const aptHour = Number.parseInt(apt.scheduledTime.split(":")[0])
+      const aptHour = Number.parseInt(apt.time.split(":")[0])
       return aptHour === hour
     })
   }
@@ -205,10 +205,10 @@ export function CalendarView() {
                         }}
                       >
                         <div className="font-medium">
-                          {appointment.patient.firstName} {appointment.patient.lastName}
+                          {/* {appointment.patient.name} {appointment.patient.lastName} */}
                         </div>
                         <div className="text-xs opacity-75">
-                          Dr. {appointment.doctor.firstName} {appointment.doctor.lastName}
+                          {/* Dr. {appointment.doctor.name} {appointment.doctor.lastName} */}
                         </div>
                         <div className="text-xs opacity-75">{appointment.appointmentType.name}</div>
                       </div>
@@ -265,16 +265,16 @@ export function CalendarView() {
                     {timeSlotAppointments.map((appointment) => (
                       <div
                         key={appointment.id}
-                        className={`p-1 rounded text-xs mb-1 cursor-pointer hover:shadow-sm transition-shadow ${getStatusColor(appointment.status.name)}`}
+                        className={`p-1 rounded text-xs mb-1 cursor-pointer hover:shadow-sm transition-shadow ${/*getStatusColor(appointment.status.name)*/ "bg-primary"}`}
                         onClick={(e) => {
                           e.stopPropagation()
                           handleAppointmentClick(appointment)
                         }}
                       >
                         <div className="font-medium truncate">
-                          {appointment.patient.firstName} {appointment.patient.lastName}
+                          {/* {appointment.patient.name} {appointment.patient.lastName} */}
                         </div>
-                        <div className="text-xs opacity-75 truncate">{appointment.appointmentType.name}</div>
+                        {/* <div className="text-xs opacity-75 truncate">{appointment.appointmentType.name}</div> */}
                       </div>
                     ))}
                   </div>
@@ -340,7 +340,7 @@ export function CalendarView() {
                     }}
                   >
                     <div className="font-medium truncate">
-                      {appointment.scheduledTime.slice(0, 5)} {appointment.patient.firstName}
+                      {appointment.time.slice(0, 5)} {appointment.patient.name}
                     </div>
                   </div>
                 ))}
@@ -405,8 +405,8 @@ export function CalendarView() {
                 <SelectContent>
                   <SelectItem value="all">Todos los doctores</SelectItem>
                   {doctors.map((doctor) => (
-                    <SelectItem key={doctor.id} value={doctor.id}>
-                      Dr. {doctor.firstName} {doctor.lastName}
+                    <SelectItem key={doctor.id} value={doctor.id.toString()}>
+                      Dr. {doctor.name} {doctor.lastName}
                     </SelectItem>
                   ))}
                 </SelectContent>
