@@ -5,12 +5,16 @@ import com.sena.managing_medical_appointments.doctors.model.dto.req.DoctorReques
 import com.sena.managing_medical_appointments.doctors.model.dto.res.DoctorResponseDTO;
 import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
 import com.sena.managing_medical_appointments.doctors.repository.IDoctorRepository;
+import com.sena.managing_medical_appointments.parameterization.model.dto.req.SpecialtyRequestDTO;
+import com.sena.managing_medical_appointments.parameterization.model.dto.res.SpecialtyResponseDTO;
 import com.sena.managing_medical_appointments.parameterization.model.entity.Specialty;
 import com.sena.managing_medical_appointments.security.model.entity.User;
 import com.sena.managing_medical_appointments.shared.AbstractService;
 import com.sena.managing_medical_appointments.shared.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service implementation for Doctor entity operations.
@@ -29,14 +33,16 @@ public class DoctorService extends AbstractService<Doctor, DoctorRequestDTO, Doc
 
     @Override
     public DoctorResponseDTO mapToResDto(Doctor entity) {
+        SpecialtyResponseDTO specialty = new SpecialtyResponseDTO();
+        specialty.setId(entity.getSpecialty().getId());
+        specialty.setName(entity.getSpecialty().getName());
         DoctorResponseDTO response = new DoctorResponseDTO();
         response.setId(entity.getId());
         response.setName(entity.getName());
         response.setLastName(entity.getLastName());
         response.setEmail(entity.getEmail());
         response.setPhone(entity.getPhone());
-        response.setSpecialtyId(entity.getSpecialty().getId());
-        response.setUserId(entity.getUser().getId());
+        response.setSpecialty(specialty);
         return response;
     }
 
@@ -44,15 +50,17 @@ public class DoctorService extends AbstractService<Doctor, DoctorRequestDTO, Doc
     public Doctor mapToEntity(DoctorRequestDTO request) {
         Specialty specialty = new Specialty();
         specialty.setId(request.getSpecialtyId());
-        User user = new User();
-        user.setId(request.getUserId());
         Doctor entity = new Doctor();
         entity.setName(request.getName());
         entity.setLastName(request.getLastName());
         entity.setEmail(request.getEmail());
         entity.setPhone(request.getPhone());
         entity.setSpecialty(specialty);
-        entity.setUser(user);
         return entity;
+    }
+
+    @Override
+    public List<Doctor> findBySpecialtyId(Long specialtyId) {
+        return repository.findBySpecialtyId(specialtyId);
     }
 }

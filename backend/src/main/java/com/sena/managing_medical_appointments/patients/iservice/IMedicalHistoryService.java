@@ -5,5 +5,9 @@ import com.sena.managing_medical_appointments.patients.model.dto.res.MedicalHist
 import com.sena.managing_medical_appointments.patients.model.entity.MedicalHistory;
 import com.sena.managing_medical_appointments.shared.IService;
 
+import java.util.List;
+
 public interface IMedicalHistoryService extends IService<MedicalHistory, MedicalHistoryRequestDTO, MedicalHistoryResponseDTO> {
+
+    List<MedicalHistory> findByPatientId(Long patientId);
 }

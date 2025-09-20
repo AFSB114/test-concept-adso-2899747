@@ -45,8 +45,8 @@ public class Patient extends BaseEntity {
     @Schema(description = "Patient's email address", example = "john.doe@example.com")
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    @Schema(description = "Associated user for authentication")
-    private User user;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    @Schema(description = "Associated user for authentication")
+//    private User user;
 }

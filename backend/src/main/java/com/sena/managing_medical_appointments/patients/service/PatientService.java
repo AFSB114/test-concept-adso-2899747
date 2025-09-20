@@ -35,21 +35,20 @@ public class PatientService extends AbstractService<Patient, PatientRequestDTO, 
         response.setBirthDate(entity.getBirthDate());
         response.setPhone(entity.getPhone());
         response.setEmail(entity.getEmail());
-        response.setUserId(entity.getUser().getId());
+        response.setIsActive(entity.getIsActive());
+        response.setCreatedAt(entity.getCreatedAt());
+        response.setUpdatedAt(entity.getUpdatedAt());
         return response;
     }
 
     @Override
     public Patient mapToEntity(PatientRequestDTO request) {
-        User user = new User();
-        user.setId(request.getUserId());
         Patient entity = new Patient();
         entity.setName(request.getName());
         entity.setLastName(request.getLastName());
         entity.setBirthDate(request.getBirthDate());
         entity.setPhone(request.getPhone());
         entity.setEmail(request.getEmail());
-        entity.setUser(user);
         return entity;
     }
 }

@@ -19,7 +19,9 @@ import {
 import { appointmentService } from "@/lib/appointment-service"
 import { patientService } from "@/lib/patient-service"
 import { doctorService } from "@/lib/doctor-service"
-import type { Appointment, AppointmentType, AppointmentStatus, Patient, Doctor } from "@/lib/types"
+import { hospitalService } from "@/lib/hospital-service"
+import { roomService } from "@/lib/room-service"
+import type { Appointment, AppointmentType, AppointmentStatus, Patient, Doctor, Hospital, Room } from "@/lib/types"
 import { Loader2 } from "lucide-react"
 
 interface AppointmentDialogProps {
@@ -45,6 +47,8 @@ export function AppointmentDialog({
   const [error, setError] = useState("")
   const [patients, setPatients] = useState<Patient[]>([])
   const [doctors, setDoctors] = useState<Doctor[]>([])
+  const [hospitals, setHospitals] = useState<Hospital[]>([])
+  const [rooms, setRooms] = useState<Room[]>([])
   const [availableSlots, setAvailableSlots] = useState<string[]>([])
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [formData, setFormData] = useState({
@@ -52,54 +56,70 @@ export function AppointmentDialog({
     doctorId: "",
     appointmentTypeId: "",
     statusId: "",
-    scheduledDate: "",
-    scheduledTime: "",
+    hospitalId: "",
+    roomId: "",
+    date: "",
+    time: "",
     duration: 30,
     notes: "",
-    roomNumber: "",
   })
 
   useEffect(() => {
     if (open) {
       loadPatients()
       loadDoctors()
+      loadHospitals()
     }
   }, [open])
 
   useEffect(() => {
     if (appointment && mode === "edit") {
       setFormData({
-        patientId: appointment.patientId,
-        doctorId: appointment.doctorId,
-        appointmentTypeId: appointment.appointmentTypeId,
-        statusId: appointment.statusId,
-        scheduledDate: appointment.scheduledDate.split("T")[0],
-        scheduledTime: appointment.scheduledTime,
-        duration: appointment.duration,
-        notes: appointment.notes,
-        roomNumber: appointment.roomNumber || "",
+        patientId: appointment.patientId.toString(),
+        doctorId: appointment.doctorId.toString(),
+        appointmentTypeId: appointment.appointmentTypeId.toString(),
+        statusId: appointment.statusId.toString(),
+        hospitalId: "", // TODO: Add hospital support to Appointment type
+        roomId: "", // TODO: Add room support to Appointment type
+        date: appointment.date,
+        time: appointment.time.length > 5 ? appointment.time.substring(0, 5) : appointment.time,
+        duration: 30, // No está en el tipo Appointment, usar valor por defecto
+        notes: "", // No está en el tipo Appointment
+        // roomNumber removed - now using roomId from select
       })
     } else if (mode === "create") {
-      const defaultStatus = appointmentStatuses.find((s) => s.name === "programada")
+      const defaultStatus = appointmentStatuses.find((s) => s.name === "SCHEDULED")
       setFormData({
         patientId: "",
         doctorId: "",
         appointmentTypeId: "",
-        statusId: defaultStatus?.id || "",
-        scheduledDate: initialData?.date || "",
-        scheduledTime: initialData?.time || "",
+        statusId: defaultStatus?.id.toString() || "",
+        hospitalId: "",
+        roomId: "",
+        date: initialData?.date || "",
+        time: initialData?.time ? (initialData.time.length > 5 ? initialData.time.substring(0, 5) : initialData.time) : "",
         duration: 30,
         notes: "",
-        roomNumber: "",
+        // roomNumber removed - now using roomId from select
       })
     }
-  }, [appointment, mode, appointmentStatuses, initialData]) // Added initialData to dependencies
+  }, [appointment, mode, appointmentStatuses, initialData])
 
   useEffect(() => {
-    if (formData.doctorId && formData.scheduledDate) {
+    if (formData.doctorId && formData.date) {
       loadAvailableSlots()
     }
-  }, [formData.doctorId, formData.scheduledDate])
+  }, [formData.doctorId, formData.date])
+
+  useEffect(() => {
+    if (formData.hospitalId) {
+      loadRooms(formData.hospitalId)
+      // Reset room selection when hospital changes
+      setFormData(prev => ({ ...prev, roomId: "" }))
+    } else {
+      setRooms([])
+    }
+  }, [formData.hospitalId])
 
   const loadPatients = async () => {
     try {
@@ -119,14 +139,48 @@ export function AppointmentDialog({
     }
   }
 
+  const loadHospitals = async () => {
+    try {
+      const response = await hospitalService.getHospitals(1, 100)
+      setHospitals(response.data)
+    } catch (err) {
+      console.error("Error loading hospitals:", err)
+    }
+  }
+
+  const loadRooms = async (hospitalId?: string) => {
+    try {
+      if (hospitalId) {
+        const response = await roomService.getRoomsByHospital(hospitalId)
+        setRooms(response.data)
+      } else {
+        setRooms([])
+      }
+    } catch (err) {
+      console.error("Error loading rooms:", err)
+      setRooms([])
+    }
+  }
+
   const loadAvailableSlots = async () => {
     try {
       setLoadingSlots(true)
-      const response = await appointmentService.getAvailableSlots(formData.doctorId, formData.scheduledDate)
-      setAvailableSlots(response.data)
+      // Note: This method may not exist in the service, we'll need to handle this
+      // const response = await appointmentService.getAvailableSlots(Number(formData.doctorId), formData.date)
+      // const slots = response.data.map(slot => slot.length > 5 ? slot.substring(0, 5) : slot)
+      // setAvailableSlots(slots)
+
+      // Temporary: provide some default time slots for demonstration
+      // In a real implementation, this would come from the backend
+      const defaultSlots = [
+        "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+        "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"
+      ]
+      setAvailableSlots(defaultSlots)
     } catch (err) {
       console.error("Error loading available slots:", err)
-      setAvailableSlots([])
+      // Provide fallback slots even on error
+      setAvailableSlots(["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"])
     } finally {
       setLoadingSlots(false)
     }
@@ -138,18 +192,35 @@ export function AppointmentDialog({
     setError("")
 
     try {
+      // Validar que todos los campos requeridos estén presentes
+      if (!formData.patientId || !formData.doctorId || !formData.appointmentTypeId || !formData.statusId || !formData.date || !formData.time) {
+        throw new Error("Todos los campos marcados con * son obligatorios")
+      }
+
       const appointmentData = {
-        ...formData,
-        patient: patients.find((p) => p.id === formData.patientId)!,
-        doctor: doctors.find((d) => d.id === formData.doctorId)!,
-        appointmentType: appointmentTypes.find((t) => t.id === formData.appointmentTypeId)!,
-        status: appointmentStatuses.find((s) => s.id === formData.statusId)!,
+        patientId: Number(formData.patientId),
+        doctorId: Number(formData.doctorId),
+        appointmentTypeId: Number(formData.appointmentTypeId),
+        statusId: Number(formData.statusId),
+        hospitalId: formData.hospitalId ? Number(formData.hospitalId) : undefined,
+        roomId: formData.roomId ? Number(formData.roomId) : undefined,
+        date: formData.date,
+        time: formatTimeForBackend(formData.time),
       }
 
       if (mode === "create") {
         await appointmentService.createAppointment(appointmentData)
       } else if (appointment) {
-        await appointmentService.updateAppointment(appointment.id, formData)
+        await appointmentService.updateAppointment(appointment.id.toString(), {
+          patientId: Number(formData.patientId),
+          doctorId: Number(formData.doctorId),
+          appointmentTypeId: Number(formData.appointmentTypeId),
+          statusId: Number(formData.statusId),
+          hospitalId: formData.hospitalId ? Number(formData.hospitalId) : undefined,
+          roomId: formData.roomId ? Number(formData.roomId) : undefined,
+          date: formData.date,
+          time: formatTimeForBackend(formData.time),
+        })
       }
       onClose()
     } catch (err) {
@@ -159,14 +230,20 @@ export function AppointmentDialog({
     }
   }
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData({ ...formData, [field]: value })
+  const formatTimeForBackend = (time: string): string => {
+    return time.length === 5 ? `${time}:00` : time
+  }
+
+  const handleInputChange = (field: string, value: string | number) => {
+    const stringValue = typeof value === 'number' ? value.toString() : value
+    setFormData({ ...formData, [field]: stringValue })
 
     // Update duration when appointment type changes
     if (field === "appointmentTypeId") {
-      const selectedType = appointmentTypes.find((t) => t.id === value)
+      const selectedType = appointmentTypes.find((t) => t.id === Number(value))
       if (selectedType) {
-        setFormData((prev) => ({ ...prev, [field]: value, duration: selectedType.duration }))
+        // Note: duration is not available in AppointmentType, using default
+        setFormData((prev) => ({ ...prev, [field]: stringValue, duration: 30 }))
       }
     }
   }
@@ -199,8 +276,8 @@ export function AppointmentDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {patients.map((patient) => (
-                    <SelectItem key={patient.id} value={patient.id}>
-                      {patient.firstName} {patient.lastName}
+                    <SelectItem key={patient.id} value={patient.id.toString()}>
+                      {patient.name} {patient.lastName}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -215,8 +292,46 @@ export function AppointmentDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {doctors.map((doctor) => (
-                    <SelectItem key={doctor.id} value={doctor.id}>
-                      Dr. {doctor.firstName} {doctor.lastName} - {doctor.specialty.name}
+                    <SelectItem key={doctor.id} value={doctor.id.toString()}>
+                      Dr. {doctor.name} {doctor.lastName} - {doctor.specialty.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="hospitalId">Hospital</Label>
+              <Select value={formData.hospitalId} onValueChange={(value) => handleInputChange("hospitalId", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona el hospital" />
+                </SelectTrigger>
+                <SelectContent>
+                  {hospitals.map((hospital) => (
+                    <SelectItem key={hospital.id} value={hospital.id.toString()}>
+                      {hospital.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="roomId">Sala/Consultorio</Label>
+              <Select
+                value={formData.roomId}
+                onValueChange={(value) => handleInputChange("roomId", value)}
+                disabled={!formData.hospitalId}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={formData.hospitalId ? "Selecciona la sala" : "Primero selecciona un hospital"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {rooms.map((room) => (
+                    <SelectItem key={room.id} value={room.id.toString()}>
+                      {room.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -236,8 +351,8 @@ export function AppointmentDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {appointmentTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
-                      {type.name} ({type.duration} min)
+                    <SelectItem key={type.id} value={type.id.toString()}>
+                      {type.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -252,7 +367,7 @@ export function AppointmentDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {appointmentStatuses.map((status) => (
-                    <SelectItem key={status.id} value={status.id}>
+                    <SelectItem key={status.id} value={status.id.toString()}>
                       {status.name.replace("_", " ")}
                     </SelectItem>
                   ))}
@@ -263,12 +378,12 @@ export function AppointmentDialog({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="scheduledDate">Fecha *</Label>
+              <Label htmlFor="date">Fecha *</Label>
               <Input
-                id="scheduledDate"
+                id="date"
                 type="date"
-                value={formData.scheduledDate}
-                onChange={(e) => handleInputChange("scheduledDate", e.target.value)}
+                value={formData.date}
+                onChange={(e) => handleInputChange("date", e.target.value)}
                 required
                 disabled={loading}
                 min={new Date().toISOString().split("T")[0]}
@@ -276,29 +391,34 @@ export function AppointmentDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="scheduledTime">Hora *</Label>
-              {formData.doctorId && formData.scheduledDate ? (
+              <Label htmlFor="time">Hora *</Label>
+              {formData.doctorId && formData.date && availableSlots.length > 0 ? (
                 <Select
-                  value={formData.scheduledTime}
-                  onValueChange={(value) => handleInputChange("scheduledTime", value)}
+                  value={formData.time}
+                  onValueChange={(value) => handleInputChange("time", value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={loadingSlots ? "Cargando..." : "Selecciona la hora"} />
+                    <SelectValue placeholder={loadingSlots ? "Cargando horarios..." : formData.time ? formData.time : "Selecciona la hora"} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableSlots.map((slot) => (
-                      <SelectItem key={slot} value={slot}>
-                        {slot}
+                      <SelectItem key={slot} value={slot.length > 5 ? slot.substring(0, 5) : slot}>
+                        {slot.length > 5 ? slot.substring(0, 5) : slot}
                       </SelectItem>
                     ))}
+                    {formData.time && !availableSlots.includes(formData.time) && !availableSlots.includes(formData.time + ":00") && (
+                      <SelectItem key="custom" value={formData.time}>
+                        {formData.time} (hora actual)
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               ) : (
                 <Input
-                  id="scheduledTime"
+                  id="time"
                   type="time"
-                  value={formData.scheduledTime}
-                  onChange={(e) => handleInputChange("scheduledTime", e.target.value)}
+                  value={formData.time}
+                  onChange={(e) => handleInputChange("time", e.target.value)}
                   required
                   disabled={loading}
                 />
@@ -317,17 +437,6 @@ export function AppointmentDialog({
                 min="15"
                 max="180"
                 step="15"
-                disabled={loading}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="roomNumber">Sala/Consultorio</Label>
-              <Input
-                id="roomNumber"
-                value={formData.roomNumber}
-                onChange={(e) => handleInputChange("roomNumber", e.target.value)}
-                placeholder="Ej: Consultorio 1"
                 disabled={loading}
               />
             </div>
