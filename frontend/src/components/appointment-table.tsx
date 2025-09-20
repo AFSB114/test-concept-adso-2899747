@@ -191,12 +191,12 @@ export function AppointmentTable() {
 
   const getPatientName = (patientId: number) => {
     const patient = patients.find(p => p.id === patientId)
-    return patient ? `${patient.firstName} ${patient.lastName}` : "Paciente no encontrado"
+    return patient ? `${patient.name} ${patient.lastName}` : "Paciente no encontrado"
   }
 
   const getDoctorName = (doctorId: number) => {
     const doctor = doctors.find(d => d.id === doctorId)
-    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : "Doctor no encontrado"
+    return doctor ? `Dr. ${doctor.name} ${doctor.lastName}` : "Doctor no encontrado"
   }
 
   return (

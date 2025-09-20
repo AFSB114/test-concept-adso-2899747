@@ -75,10 +75,10 @@ export function AppointmentDialog({
   useEffect(() => {
     if (appointment && mode === "edit") {
       setFormData({
-        patientId: appointment.patient.id.toString(),
-        doctorId: appointment.doctor.id.toString(),
-        appointmentTypeId: appointment.appointmentType.id.toString(),
-        statusId: appointment.status.id.toString(),
+        patientId: appointment.patientId.toString(),
+        doctorId: appointment.doctorId.toString(),
+        appointmentTypeId: appointment.appointmentTypeId.toString(),
+        statusId: appointment.statusId.toString(),
         hospitalId: "", // TODO: Add hospital support to Appointment type
         roomId: "", // TODO: Add room support to Appointment type
         date: appointment.date,

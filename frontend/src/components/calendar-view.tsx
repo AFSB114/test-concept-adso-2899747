@@ -1,43 +1,76 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { appointmentService } from "@/lib/appointment-service"
-import { doctorService } from "@/lib/doctor-service"
-import { patientService } from "@/lib/patient-service"
-import type { Appointment, Doctor, Patient, AppointmentType, AppointmentStatus } from "@/lib/types"
-import { Calendar, ChevronLeft, ChevronRight, Plus } from "lucide-react"
-import { AppointmentDialog } from "@/components/appointment-dialog"
-import { AppointmentDetailDialog } from "@/components/appointment-detail-dialog"
-import { appointmentConfigService } from "@/lib/appointment-config-service"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { appointmentService } from "@/lib/appointment-service";
+import { doctorService } from "@/lib/doctor-service";
+import { patientService } from "@/lib/patient-service";
+import type {
+  Appointment,
+  Doctor,
+  Patient,
+  AppointmentType,
+  AppointmentStatus,
+} from "@/lib/types";
+import { Calendar, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { AppointmentDialog } from "@/components/appointment-dialog";
+import { AppointmentDetailDialog } from "@/components/appointment-detail-dialog";
+import { appointmentConfigService } from "@/lib/appointment-config-service";
+import { get } from "http";
 
-type ViewMode = "day" | "week" | "month"
+type ViewMode = "day" | "week" | "month";
 
 export function CalendarView() {
-  const [appointments, setAppointments] = useState<Appointment[]>([])
-  const [doctors, setDoctors] = useState<Doctor[]>([])
-  const [patients, setPatients] = useState<Patient[]>([])
-  const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>([])
-  const [appointmentStatuses, setAppointmentStatuses] = useState<AppointmentStatus[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [viewMode, setViewMode] = useState<ViewMode>("week")
-  const [selectedDoctor, setSelectedDoctor] = useState<string>("all")
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
-  const [dialogMode, setDialogMode] = useState<"create" | "view" | null>(null)
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<{ date: string; time: string } | null>(null)
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>(
+    []
+  );
+  const [appointmentStatuses, setAppointmentStatuses] = useState<
+    AppointmentStatus[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState<ViewMode>("week");
+  const [selectedDoctor, setSelectedDoctor] = useState<string>("all");
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+  const [dialogMode, setDialogMode] = useState<"create" | "view" | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<{
+    date: string;
+    time: string;
+  } | null>(null);
 
   useEffect(() => {
-    loadData()
-  }, [currentDate, viewMode, selectedDoctor])
+    loadData();
+  }, [currentDate, viewMode, selectedDoctor]);
 
   const loadData = async () => {
     try {
-      setLoading(true)
-      const [appointmentsResponse, doctorsResponse, patientsResponse, typesResponse, statusesResponse] = await Promise.all([
+      setLoading(true);
+      const [
+        appointmentsResponse,
+        doctorsResponse,
+        patientsResponse,
+        typesResponse,
+        statusesResponse,
+      ] = await Promise.all([
         appointmentService.getAppointments(1, 100, {
           dateFrom: getDateRangeStart().toISOString().split("T")[0],
           dateTo: getDateRangeEnd().toISOString().split("T")[0],
@@ -47,138 +80,142 @@ export function CalendarView() {
         patientService.getPatients(1, 100, { isActive: true }),
         appointmentConfigService.getAppointmentTypes(),
         appointmentConfigService.getAppointmentStatuses(),
-      ])
-      setAppointments(appointmentsResponse.data)
-      setDoctors(doctorsResponse.data)
-      setPatients(patientsResponse.data)
-      setAppointmentTypes(typesResponse.data)
-      setAppointmentStatuses(statusesResponse.data)
+      ]);
+      setAppointments(appointmentsResponse.data);
+      setDoctors(doctorsResponse.data);
+      setPatients(patientsResponse.data);
+      setAppointmentTypes(typesResponse.data);
+      setAppointmentStatuses(statusesResponse.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al cargar datos")
+      setError(err instanceof Error ? err.message : "Error al cargar datos");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const getDateRangeStart = () => {
-    const date = new Date(currentDate)
+    const date = new Date(currentDate);
     switch (viewMode) {
       case "day":
-        return date
+        return date;
       case "week":
-        const dayOfWeek = date.getDay()
-        const diff = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1) // Monday as first day
-        return new Date(date.setDate(diff))
+        const dayOfWeek = date.getDay();
+        const diff = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Monday as first day
+        return new Date(date.setDate(diff));
       case "month":
-        return new Date(date.getFullYear(), date.getMonth(), 1)
+        return new Date(date.getFullYear(), date.getMonth(), 1);
       default:
-        return date
+        return date;
     }
-  }
+  };
 
   const getDateRangeEnd = () => {
-    const date = new Date(currentDate)
+    const date = new Date(currentDate);
     switch (viewMode) {
       case "day":
-        return date
+        return date;
       case "week":
-        const start = getDateRangeStart()
-        return new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000)
+        const start = getDateRangeStart();
+        return new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000);
       case "month":
-        return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+        return new Date(date.getFullYear(), date.getMonth() + 1, 0);
       default:
-        return date
+        return date;
     }
-  }
+  };
 
   const navigateDate = (direction: "prev" | "next") => {
-    const newDate = new Date(currentDate)
+    const newDate = new Date(currentDate);
     switch (viewMode) {
       case "day":
-        newDate.setDate(newDate.getDate() + (direction === "next" ? 1 : -1))
-        break
+        newDate.setDate(newDate.getDate() + (direction === "next" ? 1 : -1));
+        break;
       case "week":
-        newDate.setDate(newDate.getDate() + (direction === "next" ? 7 : -7))
-        break
+        newDate.setDate(newDate.getDate() + (direction === "next" ? 7 : -7));
+        break;
       case "month":
-        newDate.setMonth(newDate.getMonth() + (direction === "next" ? 1 : -1))
-        break
+        newDate.setMonth(newDate.getMonth() + (direction === "next" ? 1 : -1));
+        break;
     }
-    setCurrentDate(newDate)
-  }
+    setCurrentDate(newDate);
+  };
 
   const getAppointmentsForDate = (date: Date) => {
-    const dateStr = date.toISOString().split("T")[0]
-    return appointments.filter((apt) => apt.scheduledDate.split("T")[0] === dateStr)
-  }
+    const dateStr = date.toISOString().split("T")[0];
+    return appointments.filter((apt) => apt.date.split("T")[0] === dateStr);
+  };
 
   const getAppointmentsForTimeSlot = (date: Date, hour: number) => {
-    const dateAppointments = getAppointmentsForDate(date)
+    const dateAppointments = getAppointmentsForDate(date);
     return dateAppointments.filter((apt) => {
-      const aptHour = Number.parseInt(apt.scheduledTime.split(":")[0])
-      return aptHour === hour
-    })
-  }
+      const aptHour = Number.parseInt(apt.time.split(":")[0]);
+      return aptHour === hour;
+    });
+  };
 
   const getPatientName = (patientId: number) => {
-    const patient = patients.find(p => p.id === patientId)
-    return patient ? `${patient.firstName} ${patient.lastName}` : "Paciente no encontrado"
-  }
+    const patient = patients.find((p) => p.id === patientId);
+    return patient
+      ? `${patient.name} ${patient.lastName}`
+      : "Paciente no encontrado";
+  };
 
   const getDoctorName = (doctorId: number) => {
-    const doctor = doctors.find(d => d.id === doctorId)
-    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : "Doctor no encontrado"
-  }
+    const doctor = doctors.find((d) => d.id === doctorId);
+    return doctor
+      ? `Dr. ${doctor.name} ${doctor.lastName}`
+      : "Doctor no encontrado";
+  };
 
   const getAppointmentTypeName = (typeId: number) => {
-    const type = appointmentTypes.find(t => t.id === typeId)
-    return type ? type.name : "Tipo no encontrado"
-  }
+    const type = appointmentTypes.find((t) => t.id === typeId);
+    return type ? type.name : "Tipo no encontrado";
+  };
 
   const getAppointmentStatusName = (statusId: number) => {
-    const status = appointmentStatuses.find(s => s.id === statusId)
-    return status ? status.name : "Estado no encontrado"
-  }
+    const status = appointmentStatuses.find((s) => s.id === statusId);
+    return status ? status.name : "Estado no encontrado";
+  };
 
   const handleTimeSlotClick = (date: Date, hour: number) => {
-    const timeStr = `${hour.toString().padStart(2, "0")}:00`
+    const timeStr = `${hour.toString().padStart(2, "0")}:00`;
     setSelectedTimeSlot({
       date: date.toISOString().split("T")[0],
       time: timeStr,
-    })
-    setDialogMode("create")
-  }
+    });
+    setDialogMode("create");
+  };
 
   const handleAppointmentClick = (appointment: Appointment) => {
-    setSelectedAppointment(appointment)
-    setDialogMode("view")
-  }
+    setSelectedAppointment(appointment);
+    setDialogMode("view");
+  };
 
   const handleDialogClose = () => {
-    setSelectedAppointment(null)
-    setSelectedTimeSlot(null)
-    setDialogMode(null)
-    loadData()
-  }
+    setSelectedAppointment(null);
+    setSelectedTimeSlot(null);
+    setDialogMode(null);
+    loadData();
+  };
 
   const getStatusColor = (statusName: string) => {
     switch (statusName) {
       case "programada":
-        return "bg-gray-100 text-gray-800 border-gray-300"
+        return "bg-gray-100 text-gray-800 border-gray-300";
       case "confirmada":
-        return "bg-blue-100 text-blue-800 border-blue-300"
+        return "bg-blue-100 text-blue-800 border-blue-300";
       case "en_curso":
-        return "bg-green-100 text-green-800 border-green-300"
+        return "bg-green-100 text-green-800 border-green-300";
       case "completada":
-        return "bg-emerald-100 text-emerald-800 border-emerald-300"
+        return "bg-emerald-100 text-emerald-800 border-emerald-300";
       case "cancelada":
-        return "bg-red-100 text-red-800 border-red-300"
+        return "bg-red-100 text-red-800 border-red-300";
       case "no_asistio":
-        return "bg-orange-100 text-orange-800 border-orange-300"
+        return "bg-orange-100 text-orange-800 border-orange-300";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-300"
+        return "bg-gray-100 text-gray-800 border-gray-300";
     }
-  }
+  };
 
   const formatDateHeader = () => {
     switch (viewMode) {
@@ -188,26 +225,39 @@ export function CalendarView() {
           year: "numeric",
           month: "long",
           day: "numeric",
-        })
+        });
       case "week":
-        const start = getDateRangeStart()
-        const end = getDateRangeEnd()
-        return `${start.toLocaleDateString("es-ES", { month: "short", day: "numeric" })} - ${end.toLocaleDateString("es-ES", { month: "short", day: "numeric", year: "numeric" })}`
+        const start = getDateRangeStart();
+        const end = getDateRangeEnd();
+        return `${start.toLocaleDateString("es-ES", {
+          month: "short",
+          day: "numeric",
+        })} - ${end.toLocaleDateString("es-ES", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}`;
       case "month":
-        return currentDate.toLocaleDateString("es-ES", { year: "numeric", month: "long" })
+        return currentDate.toLocaleDateString("es-ES", {
+          year: "numeric",
+          month: "long",
+        });
       default:
-        return ""
+        return "";
     }
-  }
+  };
 
   const renderDayView = () => {
-    const hours = Array.from({ length: 12 }, (_, i) => i + 8) // 8 AM to 7 PM
-    const dayAppointments = getAppointmentsForDate(currentDate)
+    const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
+    const dayAppointments = getAppointmentsForDate(currentDate);
 
     return (
       <div className="space-y-2">
         {hours.map((hour) => {
-          const timeSlotAppointments = getAppointmentsForTimeSlot(currentDate, hour)
+          const timeSlotAppointments = getAppointmentsForTimeSlot(
+            currentDate,
+            hour
+          );
           return (
             <div key={hour} className="flex border rounded-lg min-h-16">
               <div className="w-20 p-3 bg-muted text-center text-sm font-medium border-r">
@@ -222,41 +272,49 @@ export function CalendarView() {
                     {timeSlotAppointments.map((appointment) => (
                       <div
                         key={appointment.id}
-                        className={`p-2 rounded border text-xs cursor-pointer hover:shadow-sm transition-shadow ${getStatusColor(appointment.status.name)}`}
+                        className={`p-2 rounded border text-xs cursor-pointer hover:shadow-sm transition-shadow ${getStatusColor(
+                          getAppointmentStatusName(appointment.statusId)
+                        )}`}
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleAppointmentClick(appointment)
+                          e.stopPropagation();
+                          handleAppointmentClick(appointment);
                         }}
                       >
                         <div className="font-medium">
-                          {getPatientName(appointment.patient.id)}
+                          {getPatientName(appointment.patientId)}
                         </div>
                         <div className="text-xs opacity-75">
-                          {getDoctorName(appointment.doctor.id)}
+                          {getDoctorName(appointment.doctorId)}
                         </div>
-                        <div className="text-xs opacity-75">{getAppointmentTypeName(appointment.appointmentType.id)}</div>
+                        <div className="text-xs opacity-75">
+                          {getAppointmentTypeName(
+                            appointment.appointmentTypeId
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-muted-foreground text-sm">Disponible</div>
+                  <div className="text-muted-foreground text-sm">
+                    Disponible
+                  </div>
                 )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
-    )
-  }
+    );
+  };
 
   const renderWeekView = () => {
-    const startDate = getDateRangeStart()
+    const startDate = getDateRangeStart();
     const days = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(startDate)
-      date.setDate(startDate.getDate() + i)
-      return date
-    })
-    const hours = Array.from({ length: 12 }, (_, i) => i + 8) // 8 AM to 7 PM
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      return date;
+    });
+    const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
 
     return (
       <div className="overflow-x-auto">
@@ -266,7 +324,9 @@ export function CalendarView() {
             <div className="p-2"></div>
             {days.map((day) => (
               <div key={day.toISOString()} className="p-2 text-center">
-                <div className="text-sm font-medium">{day.toLocaleDateString("es-ES", { weekday: "short" })}</div>
+                <div className="text-sm font-medium">
+                  {day.toLocaleDateString("es-ES", { weekday: "short" })}
+                </div>
                 <div className="text-lg font-bold">{day.getDate()}</div>
               </div>
             ))}
@@ -279,7 +339,10 @@ export function CalendarView() {
                 {hour.toString().padStart(2, "0")}:00
               </div>
               {days.map((day) => {
-                const timeSlotAppointments = getAppointmentsForTimeSlot(day, hour)
+                const timeSlotAppointments = getAppointmentsForTimeSlot(
+                  day,
+                  hour
+                );
                 return (
                   <div
                     key={`${day.toISOString()}-${hour}`}
@@ -289,60 +352,79 @@ export function CalendarView() {
                     {timeSlotAppointments.map((appointment) => (
                       <div
                         key={appointment.id}
-                        className={`p-1 rounded text-xs mb-1 cursor-pointer hover:shadow-sm transition-shadow ${/*getStatusColor(appointment.status.name)*/ "bg-primary"}`}
+                        className={`p-1 rounded text-xs mb-1 cursor-pointer hover:shadow-sm transition-shadow ${
+                          /*getStatusColor(appointment.status.name)*/ "bg-primary"
+                        }`}
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleAppointmentClick(appointment)
+                          e.stopPropagation();
+                          handleAppointmentClick(appointment);
                         }}
                       >
                         <div className="font-medium truncate">
-                          {getPatientName(appointment.patient.id)}
+                          {getPatientName(appointment.patientId)}
                         </div>
-                        <div className="text-xs opacity-75 truncate">{getAppointmentTypeName(appointment.appointmentType.id)}</div>
+                        <div className="text-xs opacity-75 truncate">
+                          {getAppointmentTypeName(
+                            appointment.appointmentTypeId
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
-                )
+                );
               })}
             </div>
           ))}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const renderMonthView = () => {
-    const startDate = getDateRangeStart()
-    const endDate = getDateRangeEnd()
-    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-    const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+    const startDate = getDateRangeStart();
+    const endDate = getDateRangeEnd();
+    const firstDayOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const lastDayOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0
+    );
 
     // Calculate calendar grid
-    const startCalendar = new Date(firstDayOfMonth)
-    const dayOfWeek = firstDayOfMonth.getDay()
-    startCalendar.setDate(startCalendar.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1))
+    const startCalendar = new Date(firstDayOfMonth);
+    const dayOfWeek = firstDayOfMonth.getDay();
+    startCalendar.setDate(
+      startCalendar.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)
+    );
 
-    const days = []
-    const current = new Date(startCalendar)
+    const days = [];
+    const current = new Date(startCalendar);
     for (let i = 0; i < 42; i++) {
-      days.push(new Date(current))
-      current.setDate(current.getDate() + 1)
+      days.push(new Date(current));
+      current.setDate(current.getDate() + 1);
     }
 
     return (
       <div className="grid grid-cols-7 gap-1">
         {/* Header */}
         {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((day) => (
-          <div key={day} className="p-2 text-center font-medium bg-muted rounded">
+          <div
+            key={day}
+            className="p-2 text-center font-medium bg-muted rounded"
+          >
             {day}
           </div>
         ))}
 
         {/* Calendar days */}
         {days.map((day) => {
-          const isCurrentMonth = day.getMonth() === currentDate.getMonth()
-          const dayAppointments = getAppointmentsForDate(day)
-          const isToday = day.toDateString() === new Date().toDateString()
+          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+          const dayAppointments = getAppointmentsForDate(day);
+          const isToday = day.toDateString() === new Date().toDateString();
 
           return (
             <div
@@ -357,27 +439,31 @@ export function CalendarView() {
                 {dayAppointments.slice(0, 3).map((appointment) => (
                   <div
                     key={appointment.id}
-                    className={`p-1 rounded text-xs cursor-pointer hover:shadow-sm transition-shadow ${getStatusColor(appointment.status.name)}`}
+                    className={`p-1 rounded text-xs cursor-pointer hover:shadow-sm transition-shadow ${getStatusColor(
+                      getAppointmentStatusName(appointment.statusId)
+                    )}`}
                     onClick={(e) => {
-                      e.stopPropagation()
-                      handleAppointmentClick(appointment)
+                      e.stopPropagation();
+                      handleAppointmentClick(appointment);
                     }}
                   >
                     <div className="font-medium truncate">
-                      {appointment.scheduledTime.slice(0, 5)} {getPatientName(appointment.patient.id)}
+                      {appointment.time.slice(0, 5)} {getPatientName(appointment.patientId)}
                     </div>
                   </div>
                 ))}
                 {dayAppointments.length > 3 && (
-                  <div className="text-xs text-muted-foreground">+{dayAppointments.length - 3} más</div>
+                  <div className="text-xs text-muted-foreground">
+                    +{dayAppointments.length - 3} más
+                  </div>
                 )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -389,7 +475,9 @@ export function CalendarView() {
                 <Calendar className="h-5 w-5" />
                 Calendario de Citas
               </CardTitle>
-              <CardDescription>Vista de calendario para gestionar citas médicas</CardDescription>
+              <CardDescription>
+                Vista de calendario para gestionar citas médicas
+              </CardDescription>
             </div>
             <Button onClick={() => setDialogMode("create")}>
               <Plus className="h-4 w-4 mr-2" />
@@ -401,17 +489,30 @@ export function CalendarView() {
           {/* Controls */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigateDate("prev")}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigateDate("prev")}
+              >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <div className="min-w-64 text-center font-medium">{formatDateHeader()}</div>
-              <Button variant="outline" size="sm" onClick={() => navigateDate("next")}>
+              <div className="min-w-64 text-center font-medium">
+                {formatDateHeader()}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigateDate("next")}
+              >
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
 
             <div className="flex gap-2">
-              <Select value={viewMode} onValueChange={(value: ViewMode) => setViewMode(value)}>
+              <Select
+                value={viewMode}
+                onValueChange={(value: ViewMode) => setViewMode(value)}
+              >
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -430,13 +531,16 @@ export function CalendarView() {
                   <SelectItem value="all">Todos los doctores</SelectItem>
                   {doctors.map((doctor) => (
                     <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                      Dr. {doctor.firstName} {doctor.lastName}
+                      Dr. {doctor.name} {doctor.lastName}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" onClick={() => setCurrentDate(new Date())}>
+              <Button
+                variant="outline"
+                onClick={() => setCurrentDate(new Date())}
+              >
                 Hoy
               </Button>
             </div>
@@ -475,8 +579,12 @@ export function CalendarView() {
       )}
 
       {dialogMode === "view" && selectedAppointment && (
-        <AppointmentDetailDialog appointment={selectedAppointment} open={true} onClose={handleDialogClose} />
+        <AppointmentDetailDialog
+          appointment={selectedAppointment}
+          open={true}
+          onClose={handleDialogClose}
+        />
       )}
     </div>
-  )
+  );
 }
