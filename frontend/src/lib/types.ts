@@ -40,7 +40,7 @@ export interface Permission {
 
 export interface Patient {
   id: number
-  name: string
+  firstName: string
   lastName: string
   email: string
   phone: string
@@ -70,7 +70,7 @@ export interface MedicalHistory {
 
 export interface Doctor {
   id: number;
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   phone: string;
@@ -148,8 +148,8 @@ export interface Appointment {
   room?: Room
   appointmentType: AppointmentType
   status: AppointmentStatus
-  date: string
-  time: string
+  scheduledDate: string
+  scheduledTime: string
   isActive: boolean
   createdAt: string
   updatedAt: string

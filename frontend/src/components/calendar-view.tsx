@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { appointmentService } from "@/lib/appointment-service"
 import { doctorService } from "@/lib/doctor-service"
-import type { Appointment, Doctor } from "@/lib/types"
+import { patientService } from "@/lib/patient-service"
+import type { Appointment, Doctor, Patient, AppointmentType, AppointmentStatus } from "@/lib/types"
 import { Calendar, ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { AppointmentDialog } from "@/components/appointment-dialog"
 import { AppointmentDetailDialog } from "@/components/appointment-detail-dialog"
@@ -17,8 +18,9 @@ type ViewMode = "day" | "week" | "month"
 export function CalendarView() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [doctors, setDoctors] = useState<Doctor[]>([])
-  const [appointmentTypes, setAppointmentTypes] = useState<any[]>([])
-  const [appointmentStatuses, setAppointmentStatuses] = useState<any[]>([])
+  const [patients, setPatients] = useState<Patient[]>([])
+  const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>([])
+  const [appointmentStatuses, setAppointmentStatuses] = useState<AppointmentStatus[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -35,18 +37,20 @@ export function CalendarView() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [appointmentsResponse, doctorsResponse, typesResponse, statusesResponse] = await Promise.all([
+      const [appointmentsResponse, doctorsResponse, patientsResponse, typesResponse, statusesResponse] = await Promise.all([
         appointmentService.getAppointments(1, 100, {
           dateFrom: getDateRangeStart().toISOString().split("T")[0],
           dateTo: getDateRangeEnd().toISOString().split("T")[0],
-          doctorId: selectedDoctor === "all" ? undefined : selectedDoctor,
+          doctorId: selectedDoctor === "all" ? null : Number(selectedDoctor),
         }),
         doctorService.getDoctors(1, 100, { isActive: true }),
+        patientService.getPatients(1, 100, { isActive: true }),
         appointmentConfigService.getAppointmentTypes(),
         appointmentConfigService.getAppointmentStatuses(),
       ])
       setAppointments(appointmentsResponse.data)
       setDoctors(doctorsResponse.data)
+      setPatients(patientsResponse.data)
       setAppointmentTypes(typesResponse.data)
       setAppointmentStatuses(statusesResponse.data)
     } catch (err) {
@@ -105,15 +109,35 @@ export function CalendarView() {
 
   const getAppointmentsForDate = (date: Date) => {
     const dateStr = date.toISOString().split("T")[0]
-    return appointments.filter((apt) => apt.date.split("T")[0] === dateStr)
+    return appointments.filter((apt) => apt.scheduledDate.split("T")[0] === dateStr)
   }
 
   const getAppointmentsForTimeSlot = (date: Date, hour: number) => {
     const dateAppointments = getAppointmentsForDate(date)
     return dateAppointments.filter((apt) => {
-      const aptHour = Number.parseInt(apt.time.split(":")[0])
+      const aptHour = Number.parseInt(apt.scheduledTime.split(":")[0])
       return aptHour === hour
     })
+  }
+
+  const getPatientName = (patientId: number) => {
+    const patient = patients.find(p => p.id === patientId)
+    return patient ? `${patient.firstName} ${patient.lastName}` : "Paciente no encontrado"
+  }
+
+  const getDoctorName = (doctorId: number) => {
+    const doctor = doctors.find(d => d.id === doctorId)
+    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : "Doctor no encontrado"
+  }
+
+  const getAppointmentTypeName = (typeId: number) => {
+    const type = appointmentTypes.find(t => t.id === typeId)
+    return type ? type.name : "Tipo no encontrado"
+  }
+
+  const getAppointmentStatusName = (statusId: number) => {
+    const status = appointmentStatuses.find(s => s.id === statusId)
+    return status ? status.name : "Estado no encontrado"
   }
 
   const handleTimeSlotClick = (date: Date, hour: number) => {
@@ -205,12 +229,12 @@ export function CalendarView() {
                         }}
                       >
                         <div className="font-medium">
-                          {/* {appointment.patient.name} {appointment.patient.lastName} */}
+                          {getPatientName(appointment.patient.id)}
                         </div>
                         <div className="text-xs opacity-75">
-                          {/* Dr. {appointment.doctor.name} {appointment.doctor.lastName} */}
+                          {getDoctorName(appointment.doctor.id)}
                         </div>
-                        <div className="text-xs opacity-75">{appointment.appointmentType.name}</div>
+                        <div className="text-xs opacity-75">{getAppointmentTypeName(appointment.appointmentType.id)}</div>
                       </div>
                     ))}
                   </div>
@@ -272,9 +296,9 @@ export function CalendarView() {
                         }}
                       >
                         <div className="font-medium truncate">
-                          {/* {appointment.patient.name} {appointment.patient.lastName} */}
+                          {getPatientName(appointment.patient.id)}
                         </div>
-                        {/* <div className="text-xs opacity-75 truncate">{appointment.appointmentType.name}</div> */}
+                        <div className="text-xs opacity-75 truncate">{getAppointmentTypeName(appointment.appointmentType.id)}</div>
                       </div>
                     ))}
                   </div>
@@ -340,7 +364,7 @@ export function CalendarView() {
                     }}
                   >
                     <div className="font-medium truncate">
-                      {appointment.time.slice(0, 5)} {appointment.patient.name}
+                      {appointment.scheduledTime.slice(0, 5)} {getPatientName(appointment.patient.id)}
                     </div>
                   </div>
                 ))}
@@ -406,7 +430,7 @@ export function CalendarView() {
                   <SelectItem value="all">Todos los doctores</SelectItem>
                   {doctors.map((doctor) => (
                     <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                      Dr. {doctor.name} {doctor.lastName}
+                      Dr. {doctor.firstName} {doctor.lastName}
                     </SelectItem>
                   ))}
                 </SelectContent>
