@@ -32,44 +32,29 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [formData, setFormData] = useState({
-    firstName: "",
+    name: "",
     lastName: "",
     email: "",
     phone: "",
-    dateOfBirth: "",
-    gender: "M" as "M" | "F" | "Otro",
-    address: "",
-    emergencyContact: "",
-    emergencyPhone: "",
-    isActive: true,
-  })
+    birthDate: "",
+  });
 
   useEffect(() => {
     if (patient && mode === "edit") {
       setFormData({
-        firstName: patient.firstName,
+        name: patient.name,
         lastName: patient.lastName,
         email: patient.email,
         phone: patient.phone,
-        dateOfBirth: patient.dateOfBirth.split("T")[0], // Format for date input
-        gender: patient.gender,
-        address: patient.address,
-        emergencyContact: patient.emergencyContact,
-        emergencyPhone: patient.emergencyPhone,
-        isActive: patient.isActive,
-      })
+        birthDate: patient.birthDate.split("T")[0] // Format for date input
+      });
     } else if (mode === "create") {
       setFormData({
-        firstName: "",
+        name: "",
         lastName: "",
         email: "",
         phone: "",
-        dateOfBirth: "",
-        gender: "M",
-        address: "",
-        emergencyContact: "",
-        emergencyPhone: "",
-        isActive: true,
+        birthDate: "",
       })
     }
   }, [patient, mode])
@@ -82,11 +67,10 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
     try {
       if (mode === "create") {
         await patientService.createPatient({
-          ...formData,
-          medicalHistory: [],
+          ...formData
         })
       } else if (patient) {
-        await patientService.updatePatient(patient.id, formData)
+        await patientService.updatePatient(patient.id.toString(), formData)
       }
       onClose()
     } catch (err) {
@@ -96,7 +80,7 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
     }
   }
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
   }
 
@@ -104,7 +88,9 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{mode === "create" ? "Nuevo Paciente" : "Editar Paciente"}</DialogTitle>
+          <DialogTitle>
+            {mode === "create" ? "Nuevo Paciente" : "Editar Paciente"}
+          </DialogTitle>
           <DialogDescription>
             {mode === "create"
               ? "Completa la información para registrar un nuevo paciente"
@@ -121,11 +107,11 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">Nombre *</Label>
+              <Label htmlFor="name">Nombre *</Label>
               <Input
-                id="firstName"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Ingresa el nombre"
                 required
                 disabled={loading}
@@ -174,79 +160,25 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="dateOfBirth">Fecha de Nacimiento *</Label>
+              <Label htmlFor="birthDate">Fecha de Nacimiento *</Label>
               <Input
-                id="dateOfBirth"
+                id="birthDate"
                 type="date"
-                value={formData.dateOfBirth}
-                onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                value={formData.birthDate}
+                onChange={(e) => handleInputChange("birthDate", e.target.value)}
                 required
                 disabled={loading}
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="gender">Género *</Label>
-              <Select value={formData.gender} onValueChange={(value) => handleInputChange("gender", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona el género" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="M">Masculino</SelectItem>
-                  <SelectItem value="F">Femenino</SelectItem>
-                  <SelectItem value="Otro">Otro</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="address">Dirección</Label>
-            <Textarea
-              id="address"
-              value={formData.address}
-              onChange={(e) => handleInputChange("address", e.target.value)}
-              placeholder="Ingresa la dirección completa"
-              disabled={loading}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="emergencyContact">Contacto de Emergencia</Label>
-              <Input
-                id="emergencyContact"
-                value={formData.emergencyContact}
-                onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
-                placeholder="Nombre del contacto"
-                disabled={loading}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="emergencyPhone">Teléfono de Emergencia</Label>
-              <Input
-                id="emergencyPhone"
-                value={formData.emergencyPhone}
-                onChange={(e) => handleInputChange("emergencyPhone", e.target.value)}
-                placeholder="+1234567890"
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="isActive"
-              checked={formData.isActive}
-              onCheckedChange={(checked) => handleInputChange("isActive", checked)}
-              disabled={loading}
-            />
-            <Label htmlFor="isActive">Paciente activo</Label>
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={loading}
+            >
               Cancelar
             </Button>
             <Button type="submit" disabled={loading}>
@@ -265,5 +197,5 @@ export function PatientDialog({ patient, mode, open, onClose }: PatientDialogPro
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

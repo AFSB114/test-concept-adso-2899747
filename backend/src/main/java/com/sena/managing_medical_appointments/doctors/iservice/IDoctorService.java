@@ -5,5 +5,9 @@ import com.sena.managing_medical_appointments.doctors.model.dto.res.DoctorRespon
 import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
 import com.sena.managing_medical_appointments.shared.IService;
 
+import java.util.List;
+
 public interface IDoctorService extends IService<Doctor,DoctorRequestDTO, DoctorResponseDTO> {
+
+    List<Doctor> findBySpecialtyId(Long specialtyId);
 }

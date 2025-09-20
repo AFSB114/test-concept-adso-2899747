@@ -22,7 +22,6 @@ export class PatientService {
       birthDate: patient.birthDate,
       phone: patient.phone,
       email: patient.email,
-      userId: patient.userId
     }
     return apiClient.post<ApiResponse<Patient>>("/api/patients", requestData)
   }
@@ -34,7 +33,6 @@ export class PatientService {
       birthDate: patient.birthDate,
       phone: patient.phone,
       email: patient.email,
-      userId: patient.userId
     }
     return apiClient.put<ApiResponse<Patient>>(`/api/patients/${id}`, requestData)
   }

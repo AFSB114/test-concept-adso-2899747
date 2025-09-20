@@ -1,5 +1,6 @@
 package com.sena.managing_medical_appointments.doctors.model.dto.res;
 
+import com.sena.managing_medical_appointments.parameterization.model.dto.res.SpecialtyResponseDTO;
 import com.sena.managing_medical_appointments.shared.BaseResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -16,14 +17,11 @@ public class DoctorResponseDTO extends BaseResponseDTO {
     private String lastName;
 
     @Schema(description = "Doctor's specialty name", example = "Cardiology")
-    private Long specialtyId;
+    private SpecialtyResponseDTO specialty;
 
     @Schema(description = "Doctor's phone number", example = "+1234567890")
     private String phone;
 
     @Schema(description = "Doctor's email address", example = "jane.smith@example.com")
     private String email;
-
-    @Schema(description = "User ID for authentication", example = "1")
-    private Long userId;
 }

@@ -1,10 +1,14 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import type { Appointment } from "@/lib/types"
+import type { Appointment, Patient, Doctor, AppointmentType, AppointmentStatus } from "@/lib/types"
+import { patientService } from "@/lib/patient-service"
+import { doctorService } from "@/lib/doctor-service"
+import { appointmentConfigService } from "@/lib/appointment-config-service"
 import { User, Calendar, Clock, Stethoscope, MapPin, FileText, Phone, Mail } from "lucide-react"
 
 interface AppointmentDetailDialogProps {
@@ -14,6 +18,69 @@ interface AppointmentDetailDialogProps {
 }
 
 export function AppointmentDetailDialog({ appointment, open, onClose }: AppointmentDetailDialogProps) {
+  const [patients, setPatients] = useState<Patient[]>([])
+  const [doctors, setDoctors] = useState<Doctor[]>([])
+  const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>([])
+  const [appointmentStatuses, setAppointmentStatuses] = useState<AppointmentStatus[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (open && appointment) {
+      loadReferenceData()
+    }
+  }, [open, appointment])
+
+  const loadReferenceData = async () => {
+    try {
+      setLoading(true)
+      const [patientsResponse, doctorsResponse, typesResponse, statusesResponse] = await Promise.all([
+        patientService.getPatients(1, 100, { isActive: true }),
+        doctorService.getDoctors(1, 100, { isActive: true }),
+        appointmentConfigService.getAppointmentTypes(),
+        appointmentConfigService.getAppointmentStatuses(),
+      ])
+      setPatients(patientsResponse.data)
+      setDoctors(doctorsResponse.data)
+      setAppointmentTypes(typesResponse.data)
+      setAppointmentStatuses(statusesResponse.data)
+    } catch (err) {
+      console.error("Error loading reference data:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getPatientInfo = (patientId: number) => {
+    const patient = patients.find(p => p.id === patientId)
+    return {
+      firstName: patient?.name || "Paciente",
+      lastName: patient?.lastName || "no encontrado",
+      email: patient?.email || "",
+      phone: patient?.phone || ""
+    }
+  }
+
+  const getDoctorInfo = (doctorId: number) => {
+    const doctor = doctors.find(d => d.id === doctorId)
+    return {
+      firstName: doctor?.name || "Doctor",
+      lastName: doctor?.lastName || "no encontrado",
+      email: doctor?.email || "",
+      phone: doctor?.phone || "",
+      specialty: { name: doctor?.specialty?.name || "N/A" }
+    }
+  }
+
+  const getAppointmentTypeInfo = (typeId: number) => {
+    const type = appointmentTypes.find(t => t.id === typeId)
+    return type || { name: "Tipo no encontrado" }
+  }
+
+  const getAppointmentStatusInfo = (statusId: number) => {
+    const status = appointmentStatuses.find(s => s.id === statusId)
+    return status || { name: "Estado no encontrado" }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
       weekday: "long",
@@ -46,6 +113,11 @@ export function AppointmentDetailDialog({ appointment, open, onClose }: Appointm
     }
   }
 
+  const patientInfo = getPatientInfo(appointment.patientId)
+  const doctorInfo = getDoctorInfo(appointment.doctorId)
+  const appointmentTypeInfo = getAppointmentTypeInfo(appointment.appointmentTypeId)
+  const appointmentStatusInfo = getAppointmentStatusInfo(appointment.statusId)
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -71,28 +143,18 @@ export function AppointmentDetailDialog({ appointment, open, onClose }: Appointm
                 <User className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Nombre:</span>
                 <span>
-                  {appointment.patient.firstName} {appointment.patient.lastName}
+                  {patientInfo.firstName} {patientInfo.lastName}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Email:</span>
-                <span>{appointment.patient.email}</span>
+                <span>{patientInfo.email}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Teléfono:</span>
-                <span>{appointment.patient.phone}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Género:</span>
-                <span>
-                  {appointment.patient.gender === "M"
-                    ? "Masculino"
-                    : appointment.patient.gender === "F"
-                      ? "Femenino"
-                      : "Otro"}
-                </span>
+                <span>{patientInfo.phone}</span>
               </div>
             </CardContent>
           </Card>
@@ -110,23 +172,23 @@ export function AppointmentDetailDialog({ appointment, open, onClose }: Appointm
                 <User className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Doctor:</span>
                 <span>
-                  Dr. {appointment.doctor.firstName} {appointment.doctor.lastName}
+                  Dr. {doctorInfo.firstName} {doctorInfo.lastName}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Stethoscope className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Especialidad:</span>
-                <Badge variant="outline">{appointment.doctor.specialty.name}</Badge>
+                <Badge variant="outline">{doctorInfo.specialty.name}</Badge>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Email:</span>
-                <span>{appointment.doctor.email}</span>
+                <span>{doctorInfo.email}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Teléfono:</span>
-                <span>{appointment.doctor.phone}</span>
+                <span>{doctorInfo.phone}</span>
               </div>
             </CardContent>
           </Card>
@@ -145,49 +207,32 @@ export function AppointmentDetailDialog({ appointment, open, onClose }: Appointm
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Fecha:</span>
-                <span>{formatDate(appointment.scheduledDate)}</span>
+                <span>{formatDate(appointment.date)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Hora:</span>
-                <span>{formatTime(appointment.scheduledTime)}</span>
+                <span>{formatTime(appointment.time)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Duración:</span>
-                <span>{appointment.duration} minutos</span>
+                <span>30 minutos</span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex items-center gap-2">
                 <span className="font-medium">Tipo:</span>
-                <Badge variant="outline">{appointment.appointmentType.name}</Badge>
+                <Badge variant="outline">{appointmentTypeInfo.name}</Badge>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Estado:</span>
-                <Badge variant={getStatusColor(appointment.status.name) as any}>
-                  {appointment.status.name.replace("_", " ")}
+                <Badge variant={getStatusColor(appointmentStatusInfo.name) as "default" | "secondary" | "destructive" | "outline"}>
+                  {appointmentStatusInfo.name.replace("_", " ")}
                 </Badge>
               </div>
-              {appointment.roomNumber && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">Sala:</span>
-                  <span>{appointment.roomNumber}</span>
-                </div>
-              )}
             </div>
-
-            {appointment.notes && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">Notas:</span>
-                </div>
-                <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">{appointment.notes}</p>
-              </div>
-            )}
           </CardContent>
         </Card>
 

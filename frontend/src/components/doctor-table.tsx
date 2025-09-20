@@ -62,7 +62,7 @@ export function DoctorTable() {
     setFilters({ ...filters, search: searchTerm })
   }
 
-  const handleFilterChange = (key: keyof DoctorFilters, value: any) => {
+  const handleFilterChange = (key: keyof DoctorFilters, value: string | number | boolean | undefined) => {
     setPage(1)
     setFilters({ ...filters, [key]: value })
   }
@@ -83,7 +83,7 @@ export function DoctorTable() {
   }
 
   const handleDelete = async (doctor: Doctor) => {
-    if (!confirm(`¿Estás seguro de eliminar al doctor ${doctor.firstName} ${doctor.lastName}?`)) {
+    if (!confirm(`¿Estás seguro de eliminar al doctor ${doctor.name} ${doctor.lastName}?`)) {
       return
     }
 
@@ -101,7 +101,7 @@ export function DoctorTable() {
     loadDoctors()
   }
 
-  const getSpecialtyName = (specialtyId: string) => {
+  const getSpecialtyName = (specialtyId: number) => {
     const specialty = specialties.find((s) => s.id === specialtyId)
     return specialty?.name || "Sin especialidad"
   }
@@ -111,10 +111,8 @@ export function DoctorTable() {
     return days[dayOfWeek]
   }
 
-  const getShiftSummary = (shifts: any[]) => {
-    if (!shifts || shifts.length === 0) return "Sin horarios"
-    const activeDays = shifts.filter((s) => s.isActive).map((s) => getDayName(s.dayOfWeek).slice(0, 3))
-    return activeDays.join(", ")
+  const getShiftSummary = () => {
+    return "Sin horarios"
   }
 
   return (
@@ -161,7 +159,7 @@ export function DoctorTable() {
                 <SelectContent>
                   <SelectItem value="all">Todas las especialidades</SelectItem>
                   {specialties.map((specialty) => (
-                    <SelectItem key={specialty.id} value={specialty.id}>
+                    <SelectItem key={specialty.id} value={specialty.id.toString()}>
                       {specialty.name}
                     </SelectItem>
                   ))}
@@ -222,14 +220,14 @@ export function DoctorTable() {
                   doctors.map((doctor) => (
                     <TableRow key={doctor.id}>
                       <TableCell className="font-medium">
-                        {doctor.firstName} {doctor.lastName}
+                        {doctor.name} {doctor.lastName}
                       </TableCell>
                       <TableCell>{doctor.email}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">{getSpecialtyName(doctor.specialtyId)}</Badge>
+                        <Badge variant="outline">{doctor.specialty.name}</Badge>
                       </TableCell>
-                      <TableCell className="font-mono text-sm">{doctor.licenseNumber}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{getShiftSummary(doctor.shifts)}</TableCell>
+                      <TableCell className="font-mono text-sm">{doctor.licenseNumber || "N/A"}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">Sin horarios</TableCell>
                       <TableCell>
                         <Badge variant={doctor.isActive ? "default" : "secondary"}>
                           {doctor.isActive ? "Activo" : "Inactivo"}

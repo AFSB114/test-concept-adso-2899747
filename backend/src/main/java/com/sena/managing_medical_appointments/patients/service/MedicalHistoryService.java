@@ -11,6 +11,8 @@ import com.sena.managing_medical_appointments.shared.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Service implementation for MedicalHistory entity operations.
  * Extends AbstractService to inherit common CRUD operations.
@@ -45,5 +47,10 @@ public class MedicalHistoryService extends AbstractService<MedicalHistory, Medic
         entity.setDescription(request.getDescription());
         entity.setDate(request.getDate());
         return entity;
+    }
+
+    @Override
+    public List<MedicalHistory> findByPatientId(Long patientId) {
+        return repository.findByPatientId(patientId);
     }
 }

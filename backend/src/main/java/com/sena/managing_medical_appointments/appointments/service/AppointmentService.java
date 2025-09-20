@@ -5,15 +5,22 @@ import com.sena.managing_medical_appointments.appointments.model.dto.req.Appoint
 import com.sena.managing_medical_appointments.appointments.model.dto.res.AppointmentResponseDTO;
 import com.sena.managing_medical_appointments.appointments.model.entity.Appointment;
 import com.sena.managing_medical_appointments.appointments.repository.IAppointmentRepository;
+import com.sena.managing_medical_appointments.appointments.repository.IRoomRepository;
 import com.sena.managing_medical_appointments.doctors.model.entity.Doctor;
+import com.sena.managing_medical_appointments.doctors.repository.IDoctorRepository;
 import com.sena.managing_medical_appointments.parameterization.model.entity.AppointmentStatus;
 import com.sena.managing_medical_appointments.parameterization.model.entity.AppointmentType;
+import com.sena.managing_medical_appointments.parameterization.repository.IAppointmentStatusRepository;
+import com.sena.managing_medical_appointments.parameterization.repository.IAppointmentTypeRepository;
 import com.sena.managing_medical_appointments.patients.model.entity.Patient;
+import com.sena.managing_medical_appointments.patients.repository.IPatientRepository;
 import com.sena.managing_medical_appointments.appointments.model.entity.Room;
 import com.sena.managing_medical_appointments.shared.AbstractService;
 import com.sena.managing_medical_appointments.shared.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AppointmentService extends AbstractService<Appointment, AppointmentRequestDTO, AppointmentResponseDTO> implements IAppointmentService {
@@ -25,6 +32,21 @@ public class AppointmentService extends AbstractService<Appointment, Appointment
 
     @Autowired
     private IAppointmentRepository repository;
+
+    @Autowired
+    private IPatientRepository patientRepository;
+
+    @Autowired
+    private IDoctorRepository doctorRepository;
+
+    @Autowired
+    private IRoomRepository roomRepository;
+
+    @Autowired
+    private IAppointmentTypeRepository appointmentTypeRepository;
+
+    @Autowired
+    private IAppointmentStatusRepository appointmentStatusRepository;
 
     @Override
     public AppointmentResponseDTO mapToResDto(Appointment entity) {
@@ -42,20 +64,23 @@ public class AppointmentService extends AbstractService<Appointment, Appointment
 
     @Override
     public Appointment mapToEntity(AppointmentRequestDTO request) {
-        Patient patient = new Patient();
-        patient.setId(request.getPatientId());
+        Patient patient = patientRepository.findById(request.getPatientId())
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        Doctor doctor = new Doctor();
-        doctor.setId(request.getDoctorId());
+        Doctor doctor = doctorRepository.findById(request.getDoctorId())
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        Room room = new Room();
-        room.setId(request.getRoomId());
+        Room room = null;
+        if (request.getRoomId() != null) {
+            room = roomRepository.findById(request.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Room not found"));
+        }
 
-        AppointmentType appointmentType = new AppointmentType();
-        appointmentType.setId(request.getAppointmentTypeId());
+        AppointmentType appointmentType = appointmentTypeRepository.findById(request.getAppointmentTypeId())
+                .orElseThrow(() -> new RuntimeException("Appointment type not found"));
 
-        AppointmentStatus status = new AppointmentStatus();
-        status.setId(request.getStatusId());
+        AppointmentStatus status = appointmentStatusRepository.findById(request.getStatusId())
+                .orElseThrow(() -> new RuntimeException("Appointment status not found"));
 
         Appointment entity = new Appointment();
         entity.setPatient(patient);
@@ -66,5 +91,20 @@ public class AppointmentService extends AbstractService<Appointment, Appointment
         entity.setDate(request.getDate());
         entity.setTime(request.getTime());
         return entity;
+    }
+
+    @Override
+    public List<Appointment> findByPatientId(Long patientId) {
+        return repository.findByPatientId(patientId);
+    }
+
+    @Override
+    public List<Appointment> findByDoctorId(Long doctorId) {
+        return repository.findByDoctorId(doctorId);
+    }
+
+    @Override
+    public List<Appointment> findByDoctorIdAndDate(Long doctorId, String date) {
+        return repository.findByDoctorIdAndDate(doctorId, date);
     }
 }

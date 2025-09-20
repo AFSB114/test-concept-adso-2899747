@@ -36,8 +36,8 @@ public class PatientRequestDTO extends BaseRequestDTO {
     @Schema(description = "Patient's email address", example = "john.doe@example.com")
     private String email;
 
-    @NotNull(message = "User ID cannot be null")
-    @Positive(message = "User ID must be positive")
-    @Schema(description = "User ID for authentication", example = "1")
-    private Long userId;
+//    @NotNull(message = "User ID cannot be null")
+//    @Positive(message = "User ID must be positive")
+//    @Schema(description = "User ID for authentication", example = "1")
+//    private Long userId;
 }

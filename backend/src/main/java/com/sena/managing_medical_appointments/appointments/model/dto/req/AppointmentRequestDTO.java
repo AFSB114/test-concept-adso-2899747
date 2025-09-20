@@ -18,6 +18,9 @@ public class AppointmentRequestDTO extends BaseRequestDTO {
     @Schema(description = "Doctor ID", example = "1")
     private Long doctorId;
 
+    @Schema(description = "Hospital ID", example = "1")
+    private Long hospitalId;
+
     @Schema(description = "Room ID", example = "1")
     private Long roomId;
 
